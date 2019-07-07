@@ -92,9 +92,10 @@ namespace DeepRacer
 
         public async Task<RewardResponse> GetRewardAsync(RewardRequest request)
         {
-            await SendLineAsync(JsonConvert.SerializeObject(request));
-            var line = await _reader.ReadLineAsync();
-            return JsonConvert.DeserializeObject<RewardResponse>(line);
+            var requestStr = JsonConvert.SerializeObject(request);
+            await SendLineAsync(requestStr);
+            var responseStr = await _reader.ReadLineAsync();
+            return JsonConvert.DeserializeObject<RewardResponse>(responseStr);
         }
 
         private async Task SendLineAsync(string line)

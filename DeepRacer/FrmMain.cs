@@ -328,10 +328,17 @@ namespace DeepRacer
                             waypoints = _waypoints
                         });
 
+                    var cachedRequest = "";
                     while (!ct.IsCancellationRequested)
                     {
-                        var reward = await _client.GetRewardAsync(createRewardRequest());
-                        setRewardValues(reward);
+                        var request = createRewardRequest();
+                        var requestStr = JsonConvert.SerializeObject(request);
+                        if (requestStr != cachedRequest)
+                        {
+                            cachedRequest = requestStr;
+                            var reward = await _client.GetRewardAsync(request);
+                            setRewardValues(reward);
+                        }
                         await Task.Delay(TimeSpan.FromMilliseconds(200), ct);
                     }
                 }
