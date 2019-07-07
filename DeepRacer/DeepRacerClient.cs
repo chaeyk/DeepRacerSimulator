@@ -34,6 +34,7 @@ namespace DeepRacer
         public double steering_angle { get; set; }
         public double track_width { get; set; }
         public int[] closest_waypoints { get; set; }
+        public bool is_reversed { get; set; }
     }
 
     struct RewardResponse

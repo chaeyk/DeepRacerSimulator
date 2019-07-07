@@ -30,6 +30,8 @@
         {
             this.pbReward1 = new System.Windows.Forms.ProgressBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkReverse = new System.Windows.Forms.CheckBox();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.lblProgress = new System.Windows.Forms.Label();
             this.tbProgress = new System.Windows.Forms.TrackBar();
             this.label4 = new System.Windows.Forms.Label();
@@ -59,7 +61,6 @@
             this.tbSteer = new System.Windows.Forms.TrackBar();
             this.tbThrottle = new System.Windows.Forms.TrackBar();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.btnSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).BeginInit();
@@ -81,6 +82,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.chkReverse);
             this.panel1.Controls.Add(this.btnSettings);
             this.panel1.Controls.Add(this.lblProgress);
             this.panel1.Controls.Add(this.tbProgress);
@@ -115,6 +117,27 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(862, 251);
             this.panel1.TabIndex = 1;
+            // 
+            // chkReverse
+            // 
+            this.chkReverse.AutoSize = true;
+            this.chkReverse.Location = new System.Drawing.Point(467, 151);
+            this.chkReverse.Name = "chkReverse";
+            this.chkReverse.Size = new System.Drawing.Size(70, 16);
+            this.chkReverse.TabIndex = 30;
+            this.chkReverse.Text = "Reverse";
+            this.chkReverse.UseVisualStyleBackColor = true;
+            this.chkReverse.CheckedChanged += new System.EventHandler(this.chkReverse_CheckedChanged);
+            // 
+            // btnSettings
+            // 
+            this.btnSettings.Location = new System.Drawing.Point(652, 147);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnSettings.TabIndex = 29;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
             // lblProgress
             // 
@@ -403,16 +426,6 @@
             this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
-            // btnSettings
-            // 
-            this.btnSettings.Location = new System.Drawing.Point(652, 147);
-            this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(75, 23);
-            this.btnSettings.TabIndex = 29;
-            this.btnSettings.Text = "Settings";
-            this.btnSettings.UseVisualStyleBackColor = true;
-            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -469,6 +482,7 @@
         private System.Windows.Forms.TrackBar tbProgress;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.CheckBox chkReverse;
     }
 }
 

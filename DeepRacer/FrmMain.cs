@@ -16,7 +16,8 @@ namespace DeepRacer
 {
     public partial class FrmMain : Form
     {
-        private List<RPoint> _waypoints = new List<RPoint>()
+        #region track waypoints
+        private List<RPoint> _waypointsForward = new List<RPoint>()
         {
             new RPoint(2.909995283569139,0.6831924746239328),
             new RPoint(3.3199952311658905,0.6833390533713652),
@@ -90,6 +91,8 @@ namespace DeepRacer
             new RPoint(2.7500024542019887,0.6831352757177762),
             new RPoint(2.909995283569139,0.6831924746239328)
         };
+        private List<RPoint> _waypointsReverse;
+        private List<RPoint> _waypoints;
         private List<RPoint> _inner_border = new List<RPoint>()
         {
             new RPoint(2.909906444083587,0.9840787499610828),
@@ -238,6 +241,7 @@ namespace DeepRacer
             new RPoint(2.7501283767359923,0.38223947021751337),
             new RPoint(2.9101200062595103,0.38230620783067915)
         };
+        #endregion
 
         private DeepRacerClient _client;
         private Task _connectTask;
@@ -252,6 +256,7 @@ namespace DeepRacer
         private bool _allWheelsOnTrack;
         private double _trackDirection;
         private double _directionDiff;
+        private bool _reverse = false;
 
         private Setting _setting;
 
@@ -264,6 +269,10 @@ namespace DeepRacer
         public FrmMain()
         {
             InitializeComponent();
+
+            _waypoints = _waypointsForward;
+            _waypointsReverse = new List<RPoint>(_waypointsForward);
+            _waypointsReverse.Reverse();
 
             rewardNameLabels = new List<Label>();
             rewardNameLabels.Add(lblReward1Name);
@@ -365,6 +374,7 @@ namespace DeepRacer
             request.steering_angle = (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum;
             request.track_width = _trackWidth;
             request.closest_waypoints = new int[] { _closestWaypoint, _closestWaypoint + 1 };
+            request.is_reversed = false;
             return request;
         }
 
@@ -661,6 +671,16 @@ namespace DeepRacer
             {
                 setting.Save();
                 applySetting(setting);
+            }
+        }
+
+        private void chkReverse_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_reverse != chkReverse.Checked)
+            {
+                _reverse = !_reverse;
+                _waypoints = _reverse ? _waypointsReverse : _waypointsForward;
+                setCarPosition(_carPosition, true);
             }
         }
     }
