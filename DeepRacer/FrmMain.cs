@@ -596,7 +596,7 @@ namespace DeepRacer
                 var reward = response.ext_rewards[name];
                 if (reward > _maxReward)
                     _maxReward = reward;
-                var progress = Math.Min(100, (int)(reward * 100 / _maxReward));
+                var progress = Math.Max(0, (int)(reward * 100 / _maxReward));
                 rewardNameLabels[i].Text = name;
                 rewardNameLabels[i].Visible = true;
                 rewardValueProgressBars[i].Value = progress;
