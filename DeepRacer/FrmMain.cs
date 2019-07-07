@@ -253,7 +253,7 @@ namespace DeepRacer
         private double _trackDirection;
         private double _directionDiff;
 
-        private Setting _setting = new Setting();
+        private Setting _setting;
 
         private double _maxReward = 1.0;
 
@@ -278,7 +278,7 @@ namespace DeepRacer
             rewardValueLabels.Add(lblReward2);
             rewardValueLabels.Add(lblReward3);
 
-            applySetting(new Setting());
+            applySetting(Setting.Load());
 
             setCarPosition(_waypoints[0].toPoint(), false);
             setRewardValues(new RewardResponse());
@@ -651,7 +651,10 @@ namespace DeepRacer
         {
             var setting = FrmSetting.OpenDialog(_setting);
             if (setting != null)
+            {
+                setting.Save();
                 applySetting(setting);
+            }
         }
     }
 }
