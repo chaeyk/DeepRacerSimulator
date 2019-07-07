@@ -30,6 +30,9 @@
         {
             this.pbReward1 = new System.Windows.Forms.ProgressBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.tbProgress = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.btnResetScale = new System.Windows.Forms.Button();
             this.lblDistanceFromCenter = new System.Windows.Forms.Label();
             this.lblAngle = new System.Windows.Forms.Label();
@@ -56,15 +59,13 @@
             this.tbSteer = new System.Windows.Forms.TrackBar();
             this.tbThrottle = new System.Windows.Forms.TrackBar();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.lblProgress = new System.Windows.Forms.Label();
-            this.tbProgress = new System.Windows.Forms.TrackBar();
-            this.label4 = new System.Windows.Forms.Label();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSteer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbThrottle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             this.SuspendLayout();
             // 
             // pbReward1
@@ -80,6 +81,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.btnSettings);
             this.panel1.Controls.Add(this.lblProgress);
             this.panel1.Controls.Add(this.tbProgress);
             this.panel1.Controls.Add(this.label4);
@@ -113,6 +115,33 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(862, 251);
             this.panel1.TabIndex = 1;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(383, 147);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(55, 12);
+            this.lblProgress.TabIndex = 28;
+            this.lblProgress.Text = "progress";
+            // 
+            // tbProgress
+            // 
+            this.tbProgress.Location = new System.Drawing.Point(81, 147);
+            this.tbProgress.Maximum = 100;
+            this.tbProgress.Name = "tbProgress";
+            this.tbProgress.Size = new System.Drawing.Size(284, 45);
+            this.tbProgress.TabIndex = 27;
+            this.tbProgress.Value = 50;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(25, 147);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(56, 12);
+            this.label4.TabIndex = 26;
+            this.label4.Text = "Progress";
             // 
             // btnResetScale
             // 
@@ -374,32 +403,15 @@
             this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
-            // lblProgress
+            // btnSettings
             // 
-            this.lblProgress.AutoSize = true;
-            this.lblProgress.Location = new System.Drawing.Point(383, 147);
-            this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(55, 12);
-            this.lblProgress.TabIndex = 28;
-            this.lblProgress.Text = "progress";
-            // 
-            // tbProgress
-            // 
-            this.tbProgress.Location = new System.Drawing.Point(81, 147);
-            this.tbProgress.Maximum = 100;
-            this.tbProgress.Name = "tbProgress";
-            this.tbProgress.Size = new System.Drawing.Size(284, 45);
-            this.tbProgress.TabIndex = 27;
-            this.tbProgress.Value = 50;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(25, 147);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(56, 12);
-            this.label4.TabIndex = 26;
-            this.label4.Text = "Progress";
+            this.btnSettings.Location = new System.Drawing.Point(652, 147);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnSettings.TabIndex = 29;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
             // FrmMain
             // 
@@ -414,11 +426,11 @@
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSteer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbThrottle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -456,6 +468,7 @@
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.TrackBar tbProgress;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnSettings;
     }
 }
 

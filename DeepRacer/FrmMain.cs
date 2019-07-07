@@ -278,15 +278,24 @@ namespace DeepRacer
             rewardValueLabels.Add(lblReward2);
             rewardValueLabels.Add(lblReward3);
 
-            tbSteer.Minimum = -(_setting.SteerSteps / 2);
-            tbSteer.Maximum = -tbSteer.Minimum;
-            tbSteer.Value = 0;
-            tbThrottle.Maximum = _setting.SpeedStep;
-            tbThrottle.Value = tbThrottle.Maximum;
-            tbHeading.Value = 0;
+            applySetting(new Setting());
 
             setCarPosition(_waypoints[0].toPoint(), false);
             setRewardValues(new RewardResponse());
+        }
+
+        private void applySetting(Setting setting)
+        {
+            _setting = setting;
+
+            tbSteer.Minimum = -(_setting.SteerSteps / 2);
+            tbSteer.Maximum = -tbSteer.Minimum;
+            tbSteer.Value = 0;
+            tbThrottle.Maximum = _setting.SpeedSteps;
+            tbThrottle.Value = tbThrottle.Maximum;
+            tbHeading.Value = 0;
+
+            setControlLabels();
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -491,7 +500,7 @@ namespace DeepRacer
                 }
                 else
                 {
-                    _directionDiff = getAngleDiff(_trackDirection, tbHeading.Value);
+                    _directionDiff = getAngleDiff(tbHeading.Value, _trackDirection);
                 }
 
                 // 차가 회전을 하니 최대 변의 길이 * 2.5 해서 다시 그려야 한다
@@ -636,6 +645,13 @@ namespace DeepRacer
         private void btnResetScale_Click(object sender, EventArgs e)
         {
             _maxReward = 1;
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            var setting = FrmSetting.OpenDialog(_setting);
+            if (setting != null)
+                applySetting(setting);
         }
     }
 }
