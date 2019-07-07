@@ -40,10 +40,8 @@ namespace DeepRacer
     {
         [JsonProperty]
         public const string op = "RewardResponse";
-        public double position_reward { get; set; }
-        public double heading_reward { get; set; }
-        public double speed_reward { get; set; }
         public double reward { get; set; }
+        public Dictionary<String, Double> ext_rewards { get; set; }
     }
 
     class DeepRacerClient : IDisposable

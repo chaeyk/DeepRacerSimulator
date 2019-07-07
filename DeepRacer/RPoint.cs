@@ -83,12 +83,13 @@ namespace DeepRacer
             return new RPoint(left.X - right.X, left.Y - right.Y);
         }
 
-        public const int SCREEN_Y_TOP = 500;
+        public const int SCREEN_Y_TOP = 500 * SCALE;
+        public const int SCALE = 1;
 
-        public static int ToScreenX(double x) { return (int)(x * 100); }
-        public static int ToScreenY(double y) { return SCREEN_Y_TOP - (int)(y * 100); }
-        public static double ToRacerX(int x) { return (double)x / 100; }
-        public static double ToRacerY(int y) { return (double)(SCREEN_Y_TOP - y) / 100; }
+        public static int ToScreenX(double x) { return (int)(x * SCALE * 100); }
+        public static int ToScreenY(double y) { return SCREEN_Y_TOP - (int)(y * SCALE * 100); }
+        public static double ToRacerX(int x) { return (double)x / (SCALE * 100); }
+        public static double ToRacerY(int y) { return (double)(SCREEN_Y_TOP - y) / (SCALE * 100); }
 
         /**
          * pt와 lpt1 -- lpt2 라인의 거리를 측정한다

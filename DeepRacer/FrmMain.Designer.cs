@@ -28,12 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pbPositionReward = new System.Windows.Forms.ProgressBar();
+            this.pbReward1 = new System.Windows.Forms.ProgressBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnResetScale = new System.Windows.Forms.Button();
+            this.lblDistanceFromCenter = new System.Windows.Forms.Label();
+            this.lblAngle = new System.Windows.Forms.Label();
+            this.lblClosestWp = new System.Windows.Forms.Label();
+            this.lblPosition = new System.Windows.Forms.Label();
             this.lblTotalReward = new System.Windows.Forms.Label();
-            this.lblSpeedReward = new System.Windows.Forms.Label();
-            this.lblHeadingReward = new System.Windows.Forms.Label();
-            this.lblPositionReward = new System.Windows.Forms.Label();
+            this.lblReward3 = new System.Windows.Forms.Label();
+            this.lblReward2 = new System.Windows.Forms.Label();
+            this.lblReward1 = new System.Windows.Forms.Label();
             this.lbHeading = new System.Windows.Forms.Label();
             this.lbSteer = new System.Windows.Forms.Label();
             this.lbThrottle = new System.Windows.Forms.Label();
@@ -41,49 +46,52 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.pbTotalReward = new System.Windows.Forms.ProgressBar();
-            this.label5 = new System.Windows.Forms.Label();
-            this.pbSpeedReward = new System.Windows.Forms.ProgressBar();
-            this.label4 = new System.Windows.Forms.Label();
-            this.pbHeadingReward = new System.Windows.Forms.ProgressBar();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblReward3Name = new System.Windows.Forms.Label();
+            this.pbReward3 = new System.Windows.Forms.ProgressBar();
+            this.lblReward2Name = new System.Windows.Forms.Label();
+            this.pbReward2 = new System.Windows.Forms.ProgressBar();
+            this.lblReward1Name = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbSteer = new System.Windows.Forms.TrackBar();
             this.tbThrottle = new System.Windows.Forms.TrackBar();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.lblPosition = new System.Windows.Forms.Label();
-            this.lblClosestWp = new System.Windows.Forms.Label();
-            this.lblAngle = new System.Windows.Forms.Label();
-            this.lblDistanceFromCenter = new System.Windows.Forms.Label();
-            this.btnResetScale = new System.Windows.Forms.Button();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.tbProgress = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSteer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbThrottle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             this.SuspendLayout();
             // 
-            // pbPositionReward
+            // pbReward1
             // 
-            this.pbPositionReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbPositionReward.Location = new System.Drawing.Point(564, 13);
-            this.pbPositionReward.Name = "pbPositionReward";
-            this.pbPositionReward.Size = new System.Drawing.Size(218, 15);
-            this.pbPositionReward.TabIndex = 0;
+            this.pbReward1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbReward1.Location = new System.Drawing.Point(550, 48);
+            this.pbReward1.Name = "pbReward1";
+            this.pbReward1.Size = new System.Drawing.Size(218, 15);
+            this.pbReward1.TabIndex = 0;
+            this.pbReward1.Visible = false;
             // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.lblProgress);
+            this.panel1.Controls.Add(this.tbProgress);
+            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.btnResetScale);
             this.panel1.Controls.Add(this.lblDistanceFromCenter);
             this.panel1.Controls.Add(this.lblAngle);
             this.panel1.Controls.Add(this.lblClosestWp);
             this.panel1.Controls.Add(this.lblPosition);
             this.panel1.Controls.Add(this.lblTotalReward);
-            this.panel1.Controls.Add(this.lblSpeedReward);
-            this.panel1.Controls.Add(this.lblHeadingReward);
-            this.panel1.Controls.Add(this.lblPositionReward);
+            this.panel1.Controls.Add(this.lblReward3);
+            this.panel1.Controls.Add(this.lblReward2);
+            this.panel1.Controls.Add(this.lblReward1);
             this.panel1.Controls.Add(this.lbHeading);
             this.panel1.Controls.Add(this.lbSteer);
             this.panel1.Controls.Add(this.lbThrottle);
@@ -91,60 +99,110 @@
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.pbTotalReward);
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.pbSpeedReward);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.pbHeadingReward);
-            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.lblReward3Name);
+            this.panel1.Controls.Add(this.pbReward3);
+            this.panel1.Controls.Add(this.lblReward2Name);
+            this.panel1.Controls.Add(this.pbReward2);
+            this.panel1.Controls.Add(this.lblReward1Name);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.tbSteer);
             this.panel1.Controls.Add(this.tbThrottle);
-            this.panel1.Controls.Add(this.pbPositionReward);
-            this.panel1.Location = new System.Drawing.Point(12, 556);
+            this.panel1.Controls.Add(this.pbReward1);
+            this.panel1.Location = new System.Drawing.Point(12, 551);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(862, 218);
+            this.panel1.Size = new System.Drawing.Size(862, 251);
             this.panel1.TabIndex = 1;
+            // 
+            // btnResetScale
+            // 
+            this.btnResetScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnResetScale.Location = new System.Drawing.Point(752, 147);
+            this.btnResetScale.Name = "btnResetScale";
+            this.btnResetScale.Size = new System.Drawing.Size(110, 23);
+            this.btnResetScale.TabIndex = 25;
+            this.btnResetScale.Text = "Reset Scale";
+            this.btnResetScale.UseVisualStyleBackColor = true;
+            this.btnResetScale.Click += new System.EventHandler(this.btnResetScale_Click);
+            // 
+            // lblDistanceFromCenter
+            // 
+            this.lblDistanceFromCenter.AutoSize = true;
+            this.lblDistanceFromCenter.Location = new System.Drawing.Point(612, 216);
+            this.lblDistanceFromCenter.Name = "lblDistanceFromCenter";
+            this.lblDistanceFromCenter.Size = new System.Drawing.Size(53, 12);
+            this.lblDistanceFromCenter.TabIndex = 24;
+            this.lblDistanceFromCenter.Text = "distance";
+            // 
+            // lblAngle
+            // 
+            this.lblAngle.AutoSize = true;
+            this.lblAngle.Location = new System.Drawing.Point(345, 216);
+            this.lblAngle.Name = "lblAngle";
+            this.lblAngle.Size = new System.Drawing.Size(36, 12);
+            this.lblAngle.TabIndex = 23;
+            this.lblAngle.Text = "angle";
+            // 
+            // lblClosestWp
+            // 
+            this.lblClosestWp.AutoSize = true;
+            this.lblClosestWp.Location = new System.Drawing.Point(181, 216);
+            this.lblClosestWp.Name = "lblClosestWp";
+            this.lblClosestWp.Size = new System.Drawing.Size(63, 12);
+            this.lblClosestWp.TabIndex = 22;
+            this.lblClosestWp.Text = "closestWp";
+            // 
+            // lblPosition
+            // 
+            this.lblPosition.AutoSize = true;
+            this.lblPosition.Location = new System.Drawing.Point(26, 216);
+            this.lblPosition.Name = "lblPosition";
+            this.lblPosition.Size = new System.Drawing.Size(49, 12);
+            this.lblPosition.TabIndex = 21;
+            this.lblPosition.Text = "position";
             // 
             // lblTotalReward
             // 
             this.lblTotalReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalReward.AutoSize = true;
-            this.lblTotalReward.Location = new System.Drawing.Point(799, 109);
+            this.lblTotalReward.Location = new System.Drawing.Point(785, 15);
             this.lblTotalReward.Name = "lblTotalReward";
             this.lblTotalReward.Size = new System.Drawing.Size(89, 12);
             this.lblTotalReward.TabIndex = 20;
             this.lblTotalReward.Text = "lblTotalReward";
             // 
-            // lblSpeedReward
+            // lblReward3
             // 
-            this.lblSpeedReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSpeedReward.AutoSize = true;
-            this.lblSpeedReward.Location = new System.Drawing.Point(799, 76);
-            this.lblSpeedReward.Name = "lblSpeedReward";
-            this.lblSpeedReward.Size = new System.Drawing.Size(97, 12);
-            this.lblSpeedReward.TabIndex = 19;
-            this.lblSpeedReward.Text = "lblSpeedReward";
+            this.lblReward3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward3.AutoSize = true;
+            this.lblReward3.Location = new System.Drawing.Point(785, 111);
+            this.lblReward3.Name = "lblReward3";
+            this.lblReward3.Size = new System.Drawing.Size(50, 12);
+            this.lblReward3.TabIndex = 19;
+            this.lblReward3.Text = "reward3";
+            this.lblReward3.Visible = false;
             // 
-            // lblHeadingReward
+            // lblReward2
             // 
-            this.lblHeadingReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblHeadingReward.AutoSize = true;
-            this.lblHeadingReward.Location = new System.Drawing.Point(799, 42);
-            this.lblHeadingReward.Name = "lblHeadingReward";
-            this.lblHeadingReward.Size = new System.Drawing.Size(107, 12);
-            this.lblHeadingReward.TabIndex = 18;
-            this.lblHeadingReward.Text = "lblHeadingReward";
+            this.lblReward2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward2.AutoSize = true;
+            this.lblReward2.Location = new System.Drawing.Point(785, 78);
+            this.lblReward2.Name = "lblReward2";
+            this.lblReward2.Size = new System.Drawing.Size(50, 12);
+            this.lblReward2.TabIndex = 18;
+            this.lblReward2.Text = "reward2";
+            this.lblReward2.Visible = false;
             // 
-            // lblPositionReward
+            // lblReward1
             // 
-            this.lblPositionReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPositionReward.AutoSize = true;
-            this.lblPositionReward.Location = new System.Drawing.Point(799, 13);
-            this.lblPositionReward.Name = "lblPositionReward";
-            this.lblPositionReward.Size = new System.Drawing.Size(106, 12);
-            this.lblPositionReward.TabIndex = 17;
-            this.lblPositionReward.Text = "lblPositionReward";
+            this.lblReward1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward1.AutoSize = true;
+            this.lblReward1.Location = new System.Drawing.Point(785, 48);
+            this.lblReward1.Name = "lblReward1";
+            this.lblReward1.Size = new System.Drawing.Size(50, 12);
+            this.lblReward1.TabIndex = 17;
+            this.lblReward1.Text = "reward1";
+            this.lblReward1.Visible = false;
             // 
             // lbHeading
             // 
@@ -196,7 +254,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(452, 112);
+            this.label6.Location = new System.Drawing.Point(438, 18);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(80, 12);
             this.label6.TabIndex = 11;
@@ -205,56 +263,61 @@
             // pbTotalReward
             // 
             this.pbTotalReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbTotalReward.Location = new System.Drawing.Point(564, 109);
+            this.pbTotalReward.Location = new System.Drawing.Point(550, 15);
             this.pbTotalReward.Name = "pbTotalReward";
             this.pbTotalReward.Size = new System.Drawing.Size(218, 15);
             this.pbTotalReward.TabIndex = 10;
             // 
-            // label5
+            // lblReward3Name
             // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(452, 79);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(88, 12);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Speed Reward";
+            this.lblReward3Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward3Name.AutoSize = true;
+            this.lblReward3Name.Location = new System.Drawing.Point(438, 114);
+            this.lblReward3Name.Name = "lblReward3Name";
+            this.lblReward3Name.Size = new System.Drawing.Size(82, 12);
+            this.lblReward3Name.TabIndex = 9;
+            this.lblReward3Name.Text = "reward3name";
+            this.lblReward3Name.Visible = false;
             // 
-            // pbSpeedReward
+            // pbReward3
             // 
-            this.pbSpeedReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbSpeedReward.Location = new System.Drawing.Point(564, 76);
-            this.pbSpeedReward.Name = "pbSpeedReward";
-            this.pbSpeedReward.Size = new System.Drawing.Size(218, 15);
-            this.pbSpeedReward.TabIndex = 8;
+            this.pbReward3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbReward3.Location = new System.Drawing.Point(550, 111);
+            this.pbReward3.Name = "pbReward3";
+            this.pbReward3.Size = new System.Drawing.Size(218, 15);
+            this.pbReward3.TabIndex = 8;
+            this.pbReward3.Visible = false;
             // 
-            // label4
+            // lblReward2Name
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(452, 46);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(98, 12);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Heading Reward";
+            this.lblReward2Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward2Name.AutoSize = true;
+            this.lblReward2Name.Location = new System.Drawing.Point(438, 81);
+            this.lblReward2Name.Name = "lblReward2Name";
+            this.lblReward2Name.Size = new System.Drawing.Size(82, 12);
+            this.lblReward2Name.TabIndex = 7;
+            this.lblReward2Name.Text = "reward2name";
+            this.lblReward2Name.Visible = false;
             // 
-            // pbHeadingReward
+            // pbReward2
             // 
-            this.pbHeadingReward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbHeadingReward.Location = new System.Drawing.Point(564, 43);
-            this.pbHeadingReward.Name = "pbHeadingReward";
-            this.pbHeadingReward.Size = new System.Drawing.Size(218, 15);
-            this.pbHeadingReward.TabIndex = 6;
+            this.pbReward2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbReward2.Location = new System.Drawing.Point(550, 78);
+            this.pbReward2.Name = "pbReward2";
+            this.pbReward2.Size = new System.Drawing.Size(218, 15);
+            this.pbReward2.TabIndex = 6;
+            this.pbReward2.Visible = false;
             // 
-            // label3
+            // lblReward1Name
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(452, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(97, 12);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Position Reward";
+            this.lblReward1Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblReward1Name.AutoSize = true;
+            this.lblReward1Name.Location = new System.Drawing.Point(438, 51);
+            this.lblReward1Name.Name = "lblReward1Name";
+            this.lblReward1Name.Size = new System.Drawing.Size(82, 12);
+            this.lblReward1Name.TabIndex = 5;
+            this.lblReward1Name.Text = "reward1name";
+            this.lblReward1Name.Visible = false;
             // 
             // label2
             // 
@@ -298,68 +361,51 @@
             // 
             // canvas
             // 
+            this.canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.canvas.BackColor = System.Drawing.Color.White;
             this.canvas.Location = new System.Drawing.Point(12, 12);
             this.canvas.Name = "canvas";
-            this.canvas.Size = new System.Drawing.Size(837, 525);
+            this.canvas.Size = new System.Drawing.Size(862, 528);
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             this.canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.canvas_Paint);
             this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
-            // lblPosition
+            // lblProgress
             // 
-            this.lblPosition.AutoSize = true;
-            this.lblPosition.Location = new System.Drawing.Point(27, 134);
-            this.lblPosition.Name = "lblPosition";
-            this.lblPosition.Size = new System.Drawing.Size(49, 12);
-            this.lblPosition.TabIndex = 21;
-            this.lblPosition.Text = "position";
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(383, 147);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(55, 12);
+            this.lblProgress.TabIndex = 28;
+            this.lblProgress.Text = "progress";
             // 
-            // lblClosestWp
+            // tbProgress
             // 
-            this.lblClosestWp.AutoSize = true;
-            this.lblClosestWp.Location = new System.Drawing.Point(182, 134);
-            this.lblClosestWp.Name = "lblClosestWp";
-            this.lblClosestWp.Size = new System.Drawing.Size(63, 12);
-            this.lblClosestWp.TabIndex = 22;
-            this.lblClosestWp.Text = "closestWp";
+            this.tbProgress.Location = new System.Drawing.Point(81, 147);
+            this.tbProgress.Maximum = 100;
+            this.tbProgress.Name = "tbProgress";
+            this.tbProgress.Size = new System.Drawing.Size(284, 45);
+            this.tbProgress.TabIndex = 27;
+            this.tbProgress.Value = 50;
             // 
-            // lblAngle
+            // label4
             // 
-            this.lblAngle.AutoSize = true;
-            this.lblAngle.Location = new System.Drawing.Point(387, 134);
-            this.lblAngle.Name = "lblAngle";
-            this.lblAngle.Size = new System.Drawing.Size(36, 12);
-            this.lblAngle.TabIndex = 23;
-            this.lblAngle.Text = "angle";
-            // 
-            // lblDistanceFromCenter
-            // 
-            this.lblDistanceFromCenter.AutoSize = true;
-            this.lblDistanceFromCenter.Location = new System.Drawing.Point(27, 158);
-            this.lblDistanceFromCenter.Name = "lblDistanceFromCenter";
-            this.lblDistanceFromCenter.Size = new System.Drawing.Size(53, 12);
-            this.lblDistanceFromCenter.TabIndex = 24;
-            this.lblDistanceFromCenter.Text = "distance";
-            // 
-            // btnResetScale
-            // 
-            this.btnResetScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnResetScale.Location = new System.Drawing.Point(752, 134);
-            this.btnResetScale.Name = "btnResetScale";
-            this.btnResetScale.Size = new System.Drawing.Size(110, 23);
-            this.btnResetScale.TabIndex = 25;
-            this.btnResetScale.Text = "Reset Scale";
-            this.btnResetScale.UseVisualStyleBackColor = true;
-            this.btnResetScale.Click += new System.EventHandler(this.btnResetScale_Click);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(25, 147);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(56, 12);
+            this.label4.TabIndex = 26;
+            this.label4.Text = "Progress";
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 786);
+            this.ClientSize = new System.Drawing.Size(886, 814);
             this.Controls.Add(this.canvas);
             this.Controls.Add(this.panel1);
             this.Name = "FrmMain";
@@ -372,24 +418,25 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbSteer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbThrottle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar pbPositionReward;
+        private System.Windows.Forms.ProgressBar pbReward1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar tbSteer;
         private System.Windows.Forms.TrackBar tbThrottle;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ProgressBar pbTotalReward;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ProgressBar pbSpeedReward;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ProgressBar pbHeadingReward;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblReward3Name;
+        private System.Windows.Forms.ProgressBar pbReward3;
+        private System.Windows.Forms.Label lblReward2Name;
+        private System.Windows.Forms.ProgressBar pbReward2;
+        private System.Windows.Forms.Label lblReward1Name;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TrackBar tbHeading;
         private System.Windows.Forms.Label label7;
@@ -398,14 +445,17 @@
         private System.Windows.Forms.Label lbSteer;
         private System.Windows.Forms.Label lbThrottle;
         private System.Windows.Forms.Label lblTotalReward;
-        private System.Windows.Forms.Label lblSpeedReward;
-        private System.Windows.Forms.Label lblHeadingReward;
-        private System.Windows.Forms.Label lblPositionReward;
+        private System.Windows.Forms.Label lblReward3;
+        private System.Windows.Forms.Label lblReward2;
+        private System.Windows.Forms.Label lblReward1;
         private System.Windows.Forms.Label lblPosition;
         private System.Windows.Forms.Label lblClosestWp;
         private System.Windows.Forms.Label lblAngle;
         private System.Windows.Forms.Label lblDistanceFromCenter;
         private System.Windows.Forms.Button btnResetScale;
+        private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.TrackBar tbProgress;
+        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -243,27 +243,40 @@ namespace DeepRacer
         private Task _connectTask;
         private CancellationTokenSource _closingCts = new CancellationTokenSource();
 
-        private Size _carSize = new Size(25, 18);
+        private Size _carSize = new Size(25 * RPoint.SCALE, 18  * RPoint.SCALE);
         private Point _carPosition;
         private int _closestWaypoint = -1;
         private double _distanceFromCenter;
         private bool _isLeftOfCenter;
+        private const double _trackWidth = 0.6017558857057772;
+        private bool _allWheelsOnTrack;
+        private double _trackDirection;
+        private double _directionDiff;
 
         private Setting _setting = new Setting();
 
         private double _maxReward = 1.0;
 
+        private List<Label> rewardNameLabels;
+        private List<ProgressBar> rewardValueProgressBars;
+        private List<Label> rewardValueLabels;
+
         public FrmMain()
         {
-            List<RPoint> wps = new List<RPoint>()
-            {
-                new RPoint(3, 0),
-                new RPoint(2, 0),
-                new RPoint(1, 0),
-                new RPoint(0, 0)
-            };
-            Console.WriteLine(findClosestWaypointPrevIndex(new RPoint(1.4, 0), wps));
             InitializeComponent();
+
+            rewardNameLabels = new List<Label>();
+            rewardNameLabels.Add(lblReward1Name);
+            rewardNameLabels.Add(lblReward2Name);
+            rewardNameLabels.Add(lblReward3Name);
+            rewardValueProgressBars = new List<ProgressBar>();
+            rewardValueProgressBars.Add(pbReward1);
+            rewardValueProgressBars.Add(pbReward2);
+            rewardValueProgressBars.Add(pbReward3);
+            rewardValueLabels = new List<Label>();
+            rewardValueLabels.Add(lblReward1);
+            rewardValueLabels.Add(lblReward2);
+            rewardValueLabels.Add(lblReward3);
 
             tbSteer.Minimum = -(_setting.SteerSteps / 2);
             tbSteer.Maximum = -tbSteer.Minimum;
@@ -272,7 +285,7 @@ namespace DeepRacer
             tbThrottle.Value = tbThrottle.Maximum;
             tbHeading.Value = 0;
 
-            setCarPosition(_waypoints[0].toPoint());
+            setCarPosition(_waypoints[0].toPoint(), false);
             setRewardValues(new RewardResponse());
         }
 
@@ -324,17 +337,17 @@ namespace DeepRacer
         private RewardRequest createRewardRequest()
         {
             var request = new RewardRequest();
-            request.all_wheels_on_track = true;
+            request.all_wheels_on_track = _allWheelsOnTrack;
             request.x = RPoint.ToRacerX(_carPosition.X);
             request.y = RPoint.ToRacerY(_carPosition.Y);
             request.distance_from_center = _distanceFromCenter;
             request.is_left_of_center = _isLeftOfCenter;
             request.heading = tbHeading.Value;
-            request.progress = -1; // TODO
-            request.steps = -1; // TODO
+            request.progress = tbProgress.Value;
+            request.steps = 5000; // TODO
             request.speed = tbThrottle.Value / (double)tbThrottle.Maximum;
             request.steering_angle = (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum;
-            request.track_width = 0.6017558857057772;
+            request.track_width = _trackWidth;
             request.closest_waypoints = new int[] { _closestWaypoint, _closestWaypoint + 1 };
             return request;
         }
@@ -414,12 +427,13 @@ namespace DeepRacer
             using (var brush = new SolidBrush(Color.Yellow))
             using (var frontBrush = new SolidBrush(Color.Red))
             using (var sidePen = new Pen(Color.Blue))
+            using (var outBrush = new SolidBrush(Color.Gray))
             {
                 graphics.TranslateTransform(_carPosition.X, _carPosition.Y);
                 graphics.RotateTransform(-tbHeading.Value);
 
                 var carHalfSize = new Size(_carSize.Width, _carSize.Height / 2);
-                graphics.FillRectangle(brush, new Rectangle(new Point(-_carSize.Width, -_carSize.Height / 2), _carSize));
+                graphics.FillRectangle(_allWheelsOnTrack ? brush : outBrush, new Rectangle(new Point(-_carSize.Width, -_carSize.Height / 2), _carSize));
 
                 // 차의 앞부분을 표시
                 graphics.FillRectangle(frontBrush, new Rectangle(-3, -_carSize.Height / 2, 3, _carSize.Height));
@@ -437,7 +451,7 @@ namespace DeepRacer
         {
             if (e.Button == MouseButtons.Left)
             {
-                setCarPosition(e.Location);
+                setCarPosition(e.Location, true);
             }
         }
 
@@ -445,51 +459,85 @@ namespace DeepRacer
         {
             if (e.Button == MouseButtons.Left)
             {
-                setCarPosition(e.Location);
+                setCarPosition(e.Location, true);
             }
         }
 
-        private void setCarPosition(Point newPosition)
+        // setCarPosition()으로 재진입하지 않도록 한다.
+        private bool _settingCarPosition = false;
+
+        private void setCarPosition(Point newPosition, bool maintainDirectionDiff)
         {
-            Point oldPosition = _carPosition;
-            _carPosition = newPosition;
+            if (_settingCarPosition)
+                return;
 
-            int oldClosestWaypoint = _closestWaypoint;
-            RPoint newRPosition = RPoint.From(newPosition);
-            _closestWaypoint = findClosestWaypointPrevIndex(newRPosition, _waypoints);
-
-            _distanceFromCenter = newRPosition.DistanceToLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
-            _isLeftOfCenter = newRPosition.IsLeftOfLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
-
-            // 차가 회전을 하니 최대 변의 길이 * 2.5 해서 다시 그려야 한다
-            int max = Math.Max(_carSize.Width, _carSize.Height);
-            int len = (int)(max * 2.5);
-
-            Size drawSize = new Size(len, len);
-            Size drawHalfSize = new Size(drawSize.Width / 2, drawSize.Height / 2);
-
-            Region region = new Region(new Rectangle(newPosition - drawHalfSize, drawSize));
-            if (!oldPosition.IsEmpty)
+            _settingCarPosition = true;
+            try
             {
-                region.Union(new Rectangle(oldPosition - drawHalfSize, drawSize));
-            }
+                Point oldPosition = _carPosition;
+                _carPosition = newPosition;
 
-            // 이전의 closest waypoint 표시는 지워야 한다.
-            if (oldClosestWaypoint >= 0)
+                int oldClosestWaypoint = _closestWaypoint;
+                RPoint newRPosition = RPoint.From(newPosition);
+                _closestWaypoint = findClosestWaypointPrevIndex(newRPosition, _waypoints);
+
+                _distanceFromCenter = newRPosition.DistanceToLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
+                _isLeftOfCenter = newRPosition.IsLeftOfLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
+                _allWheelsOnTrack = _distanceFromCenter < (_trackWidth * 0.45);
+                _trackDirection = _waypoints[_closestWaypoint].GetAngle(_waypoints[_closestWaypoint + 1]);
+                if (maintainDirectionDiff)
+                {
+                    tbHeading.Value = (int)getAngleDiff(_trackDirection + _directionDiff, 0);
+                }
+                else
+                {
+                    _directionDiff = getAngleDiff(_trackDirection, tbHeading.Value);
+                }
+
+                // 차가 회전을 하니 최대 변의 길이 * 2.5 해서 다시 그려야 한다
+                int max = Math.Max(_carSize.Width, _carSize.Height);
+                int len = (int)(max * 2.5);
+
+                Size drawSize = new Size(len, len);
+                Size drawHalfSize = new Size(drawSize.Width / 2, drawSize.Height / 2);
+
+                Region region = new Region(new Rectangle(newPosition - drawHalfSize, drawSize));
+                if (!oldPosition.IsEmpty)
+                {
+                    region.Union(new Rectangle(oldPosition - drawHalfSize, drawSize));
+                }
+
+                // 이전의 closest waypoint 표시는 지워야 한다.
+                if (oldClosestWaypoint >= 0)
+                {
+                    Size wpSize = new Size(6, 6);
+                    Size wpHalfSize = new Size(wpSize.Width / 2, wpSize.Height / 2);
+
+                    Point wp1 = _waypoints[oldClosestWaypoint].toPoint();
+                    region.Union(new Rectangle(wp1 - wpHalfSize, wpSize));
+
+                    Point wp2 = _waypoints[oldClosestWaypoint + 1].toPoint();
+                    region.Union(new Rectangle(wp2 - wpHalfSize, wpSize));
+                }
+
+                canvas.Invalidate(region);
+
+                setPositionLabels();
+            }
+            finally
             {
-                Size wpSize = new Size(6, 6);
-                Size wpHalfSize = new Size(wpSize.Width / 2, wpSize.Height / 2);
-
-                Point wp1 = _waypoints[oldClosestWaypoint].toPoint();
-                region.Union(new Rectangle(wp1 - wpHalfSize, wpSize));
-
-                Point wp2 = _waypoints[oldClosestWaypoint + 1].toPoint();
-                region.Union(new Rectangle(wp2 - wpHalfSize, wpSize));
+                _settingCarPosition = false;
             }
+        }
 
-            canvas.Invalidate(region);
-
-            setPositionLabels();
+        private double getAngleDiff(double angle1, double angle2)
+        {
+            double diff = angle1 - angle2;
+            if (diff >= 180)
+                diff -= 360;
+            else if (diff <= -180)
+                diff += 360;
+            return diff;
         }
 
         private void setPositionLabels()
@@ -500,21 +548,16 @@ namespace DeepRacer
 
             lblClosestWp.Text = $"Closest Waypoint: {_closestWaypoint}";
 
-            var trackDirection = _waypoints[_closestWaypoint].GetAngle(_waypoints[_closestWaypoint + 1]);
-            var carDirection = tbHeading.Value;
-            var directionDiff = Math.Abs(trackDirection - carDirection);
-            if (directionDiff >= 180)
-                directionDiff = Math.Abs(directionDiff - 360);
             lblAngle.Text = String.Format("Track Direction: {0,0:f2}, DirectionDiff: {1,0:f2}",
-                trackDirection, directionDiff);
+                _trackDirection, _directionDiff);
 
-            lblDistanceFromCenter.Text = $"Distance from center: {_distanceFromCenter}";
+            lblDistanceFromCenter.Text = String.Format("Distance from center: {0,0:f3}", _distanceFromCenter);
         }
 
         private void ValueChanged(object sender, EventArgs e)
         {
             setControlLabels();
-            setCarPosition(_carPosition);
+            setCarPosition(_carPosition, false);
         }
 
         private void setControlLabels()
@@ -522,29 +565,45 @@ namespace DeepRacer
             lbThrottle.Text = String.Format("{0,0:f2}", (double)_setting.MaxSpeed * tbThrottle.Value / tbThrottle.Maximum);
             lbSteer.Text = String.Format("{0,0:f2}", (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum);
             lbHeading.Text = tbHeading.Value.ToString();
+            lblProgress.Text = tbProgress.Value.ToString();
         }
 
         private void setRewardValues(RewardResponse response)
         {
-            if (response.position_reward > _maxReward)
-                _maxReward = response.position_reward;
-            pbPositionReward.Value = Math.Min(100, (int)(response.position_reward * 100 / _maxReward));
-            lblPositionReward.Text = response.position_reward.ToString("f6");
-
-            if (response.heading_reward > _maxReward)
-                _maxReward = response.heading_reward;
-            pbHeadingReward.Value = Math.Min(100, (int)(response.heading_reward * 100 / _maxReward));
-            lblHeadingReward.Text = response.heading_reward.ToString("f6");
-
-            if (response.speed_reward > _maxReward)
-                _maxReward = response.speed_reward;
-            pbSpeedReward.Value = Math.Min(100, (int)(response.speed_reward * 100 / _maxReward));
-            lblSpeedReward.Text = response.speed_reward.ToString("f6");
-
             if (response.reward > _maxReward)
                 _maxReward = response.reward;
             pbTotalReward.Value = Math.Min(100, (int)(response.reward * 100 / _maxReward));
             lblTotalReward.Text = response.reward.ToString("f6");
+
+            if (response.ext_rewards == null)
+                return;
+
+            var i = 0;
+            foreach (var name in response.ext_rewards.Keys)
+            {
+                if (i >= rewardNameLabels.Count)
+                    break;
+
+                var reward = response.ext_rewards[name];
+                if (reward > _maxReward)
+                    _maxReward = reward;
+                var progress = Math.Min(100, (int)(reward * 100 / _maxReward));
+                rewardNameLabels[i].Text = name;
+                rewardNameLabels[i].Visible = true;
+                rewardValueProgressBars[i].Value = progress;
+                rewardValueProgressBars[i].Visible = true;
+                rewardValueLabels[i].Text = reward.ToString("f6");
+                rewardValueLabels[i].Visible = true;
+                i++;
+            }
+
+            while (i < rewardNameLabels.Count)
+            {
+                rewardNameLabels[i].Visible = false;
+                rewardValueProgressBars[i].Visible = false;
+                rewardValueLabels[i].Visible = false;
+                i++;
+            }
         }
 
         private int findClosestWaypointPrevIndex(RPoint pt, List<RPoint> waypoints)
