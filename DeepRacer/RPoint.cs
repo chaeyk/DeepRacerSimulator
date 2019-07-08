@@ -96,38 +96,8 @@ namespace DeepRacer
          */
         public double DistanceToLine(RPoint lpt1, RPoint lpt2)
         {
-            double dx = lpt2.X - lpt1.X;
-            double dy = lpt2.Y - lpt1.Y;
-            if (dx == 0 && dy == 0)
-            {
-                // It's a point not a line segment
-                dx = this.X - lpt1.X;
-                dy = this.Y - lpt1.Y;
-                return Math.Sqrt(dx * dx + dy * dy);
-            }
-
-            // Calculate the t that minimizes the distance
-            double t = ((this.X - lpt1.X) * dx + (this.Y - lpt1.Y) * dy) / (dx * dx + dy * dy);
-
-            // See if this represents one of the segment's
-            // end points or a point in the middle
-            if (t < 0)
-            {
-                dx = this.X - lpt1.X;
-                dy = this.Y - lpt1.Y;
-            }
-            else if (t > 1)
-            {
-                dx = this.X - lpt2.X;
-                dy = this.Y - lpt2.Y;
-            }
-            else
-            {
-                dx = this.X - (lpt1.X + t * dx);
-                dy = this.Y - (lpt1.Y + t * dy);
-            }
-
-            return Math.Sqrt(dx * dx + dy * dy);
+            return Math.Abs((lpt2.Y - lpt1.Y) * this.X - (lpt2.X - lpt1.X) * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) /
+                Math.Sqrt(Math.Pow(lpt2.Y - lpt1.Y, 2) + Math.Pow(lpt2.X - lpt1.X, 2));
         }
 
         /**
@@ -136,7 +106,7 @@ namespace DeepRacer
         public bool IsLeftOfLine(RPoint lpt1, RPoint lpt2)
         {
             var d = (X - lpt1.X) * (lpt2.Y - lpt1.Y) - (Y - lpt1.Y) * (lpt2.X - lpt1.X);
-            return d > 0;
+            return d < 0;
         }
 
         /**

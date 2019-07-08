@@ -374,7 +374,7 @@ namespace DeepRacer
             request.steering_angle = (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum;
             request.track_width = _trackWidth;
             request.closest_waypoints = new int[] { _closestWaypoint, _closestWaypoint + 1 };
-            request.is_reversed = false;
+            request.is_reversed = chkReverse.Checked;
             return request;
         }
 
@@ -451,9 +451,9 @@ namespace DeepRacer
             }
 
             using (var brush = new SolidBrush(Color.Yellow))
-            using (var frontBrush = new SolidBrush(Color.Red))
-            using (var sidePen = new Pen(Color.Blue))
             using (var outBrush = new SolidBrush(Color.Gray))
+            using (var frontBrush = new SolidBrush(Color.Red))
+            using (var sidePen = new Pen(Color.Red))
             {
                 graphics.TranslateTransform(_carPosition.X, _carPosition.Y);
                 graphics.RotateTransform(-tbHeading.Value);
@@ -465,9 +465,8 @@ namespace DeepRacer
                 graphics.FillRectangle(frontBrush, new Rectangle(-3, -_carSize.Height / 2, 3, _carSize.Height));
 
                 // 옆구리에 중앙선 방향을 표시
-                var y = _carSize.Height / 2 * (_isLeftOfCenter ? -1 : 1);
+                var y = _carSize.Height / 2 * (_isLeftOfCenter ? 1 : -1);
                 graphics.DrawLine(sidePen, new Point(-_carSize.Width, y), new Point(-1, y));
-                graphics.FillRectangle(frontBrush, new Rectangle(-_carSize.Width, _carSize.Height / 2 * (_isLeftOfCenter ? -1 : 1), _carSize.Width, 2));
 
                 graphics.ResetTransform();
             }
