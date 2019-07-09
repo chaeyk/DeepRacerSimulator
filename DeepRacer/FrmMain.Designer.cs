@@ -61,6 +61,7 @@
             this.tbSteer = new System.Windows.Forms.TrackBar();
             this.tbThrottle = new System.Windows.Forms.TrackBar();
             this.canvas = new System.Windows.Forms.PictureBox();
+            this.lblMouse = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).BeginInit();
@@ -82,6 +83,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.lblMouse);
             this.panel1.Controls.Add(this.chkReverse);
             this.panel1.Controls.Add(this.btnSettings);
             this.panel1.Controls.Add(this.lblProgress);
@@ -113,9 +115,9 @@
             this.panel1.Controls.Add(this.tbSteer);
             this.panel1.Controls.Add(this.tbThrottle);
             this.panel1.Controls.Add(this.pbReward1);
-            this.panel1.Location = new System.Drawing.Point(12, 551);
+            this.panel1.Location = new System.Drawing.Point(12, 553);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(862, 251);
+            this.panel1.Size = new System.Drawing.Size(862, 270);
             this.panel1.TabIndex = 1;
             // 
             // chkReverse
@@ -419,18 +421,27 @@
             this.canvas.BackColor = System.Drawing.Color.White;
             this.canvas.Location = new System.Drawing.Point(12, 12);
             this.canvas.Name = "canvas";
-            this.canvas.Size = new System.Drawing.Size(862, 528);
+            this.canvas.Size = new System.Drawing.Size(862, 535);
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             this.canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.canvas_Paint);
             this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
+            // lblMouse
+            // 
+            this.lblMouse.AutoSize = true;
+            this.lblMouse.Location = new System.Drawing.Point(28, 242);
+            this.lblMouse.Name = "lblMouse";
+            this.lblMouse.Size = new System.Drawing.Size(44, 12);
+            this.lblMouse.TabIndex = 31;
+            this.lblMouse.Text = "mouse";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 814);
+            this.ClientSize = new System.Drawing.Size(886, 835);
             this.Controls.Add(this.canvas);
             this.Controls.Add(this.panel1);
             this.Name = "FrmMain";
@@ -483,6 +494,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.CheckBox chkReverse;
+        private System.Windows.Forms.Label lblMouse;
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -94,8 +95,19 @@ namespace DeepRacer
         public async Task<RewardResponse> GetRewardAsync(RewardRequest request)
         {
             var requestStr = JsonConvert.SerializeObject(request);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             await SendLineAsync(requestStr);
             var responseStr = await _reader.ReadLineAsync();
+
+            stopwatch.Stop();
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            if (elapsed > 50)
+            {
+                Console.WriteLine($"executed for {stopwatch.ElapsedMilliseconds} ms");
+            }
             return JsonConvert.DeserializeObject<RewardResponse>(responseStr);
         }
 

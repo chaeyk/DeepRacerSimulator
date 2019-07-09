@@ -370,7 +370,7 @@ namespace DeepRacer
             request.heading = tbHeading.Value;
             request.progress = tbProgress.Value;
             request.steps = 5000; // TODO
-            request.speed = tbThrottle.Value / (double)tbThrottle.Maximum;
+            request.speed = (double)_setting.MaxSpeed * tbThrottle.Value / tbThrottle.Maximum;
             request.steering_angle = (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum;
             request.track_width = _trackWidth;
             request.closest_waypoints = new int[] { _closestWaypoint, _closestWaypoint + 1 };
@@ -486,6 +486,8 @@ namespace DeepRacer
             {
                 setCarPosition(e.Location, true);
             }
+
+            lblMouse.Text = $"Mouse: ({RPoint.From(e.Location)})";
         }
 
         // setCarPosition()으로 재진입하지 않도록 한다.
