@@ -18,7 +18,15 @@ namespace DeepRacer
         public const string op = "InitializingData";
         public string rf { get; set; }
         public List<RPoint> waypoints { get; set; }
+        public double track_width { get; set; }
         public List<double> speeds { get; set; }
+    }
+
+    struct InitializedData
+    {
+        [JsonProperty]
+        public const string op = "InitializedData";
+        public List<RPoint> optimal_waypoints { get; set; }
     }
 
     struct RewardRequest
@@ -42,10 +50,20 @@ namespace DeepRacer
 
     struct RewardResponse
     {
-        [JsonProperty]
-        public const string op = "RewardResponse";
+        public string op { get; set; }
         public double reward { get; set; }
         public Dictionary<String, Double> ext_rewards { get; set; }
+    }
+
+    struct Ping
+    {
+        [JsonProperty]
+        public const string op = "Ping";
+    }
+
+    struct Pong
+    {
+        public string op { get; set; }
     }
 
     class DeepRacerClient : IDisposable
@@ -97,9 +115,11 @@ namespace DeepRacer
             _client = null;
         }
 
-        public async Task SendInitializingDataAsync(InitializingData initializingData)
+        public async Task<InitializedData> SendInitializingDataAsync(InitializingData initializingData)
         {
             await SendLineAsync(JsonConvert.SerializeObject(initializingData));
+            var responseStr = await _reader.ReadLineAsync();
+            return JsonConvert.DeserializeObject<InitializedData>(responseStr);
         }
 
         public async Task<RewardResponse> GetRewardAsync(RewardRequest request)
@@ -119,6 +139,20 @@ namespace DeepRacer
                 Console.WriteLine($"executed for {stopwatch.ElapsedMilliseconds} ms");
             }
             return JsonConvert.DeserializeObject<RewardResponse>(responseStr);
+        }
+
+        public async Task Ping()
+        {
+            var requestStr = JsonConvert.SerializeObject(new Ping());
+            await SendLineAsync(requestStr);
+            var responseStr = await _reader.ReadLineAsync();
+            var response = JsonConvert.DeserializeObject<Pong>(responseStr);
+
+            if (response.op != "Pong")
+            {
+                Console.WriteLine($"Invalid pong: {responseStr}");
+                Close();
+            }
         }
 
         private async Task SendLineAsync(string line)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -7,7 +9,44 @@ using System.Threading.Tasks;
 
 namespace DeepRacer
 {
-    struct RPoint
+    public class RPointJsonConverter : JsonConverter<RPoint>
+    {
+        public override RPoint ReadJson(JsonReader reader, Type objectType, RPoint existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            var array = JArray.Load(reader);
+            /*
+            if (!reader.Read())
+                throw new Exception("unexpected end of json");
+
+            if (reader.TokenType != JsonToken.StartArray)
+                throw new Exception($"expected start array: {reader.TokenType}");
+                */
+
+            double x = array[0].ToObject<double>();
+            double y = array[1].ToObject<double>();
+
+            /*
+            if (!reader.Read())
+                throw new Exception("unexpected end of json");
+
+            if (reader.TokenType != JsonToken.EndArray)
+                throw new Exception($"expected end array: {reader.TokenType}");
+                */
+
+            return new RPoint(x, y);
+        }
+
+        public override void WriteJson(JsonWriter writer, RPoint value, JsonSerializer serializer)
+        {
+            writer.WriteStartArray();
+            writer.WriteValue(value.X);
+            writer.WriteValue(value.Y);
+            writer.WriteEndArray();
+        }
+    }
+
+    [JsonConverter(typeof(RPointJsonConverter))]
+    public struct RPoint
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -93,10 +132,11 @@ namespace DeepRacer
 
         /**
          * pt와 lpt1 -- lpt2 라인의 거리를 측정한다
+         * pt가 lpt1-lpt2의 왼쪽이면 마이너스, 오른쪽이면 플러스 값이 리턴된다.
          */
         public double DistanceToLine(RPoint lpt1, RPoint lpt2)
         {
-            return Math.Abs((lpt2.Y - lpt1.Y) * this.X - (lpt2.X - lpt1.X) * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) /
+            return ((lpt2.Y - lpt1.Y) * this.X - (lpt2.X - lpt1.X) * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) /
                 Math.Sqrt(Math.Pow(lpt2.Y - lpt1.Y, 2) + Math.Pow(lpt2.X - lpt1.X, 2));
         }
 

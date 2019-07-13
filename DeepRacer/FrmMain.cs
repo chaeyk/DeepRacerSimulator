@@ -258,6 +258,8 @@ namespace DeepRacer
         private double _directionDiff;
         private bool _reverse = false;
 
+        private List<RPoint> _optimalWaypoints;
+
         private Setting _setting;
 
         private double _maxReward = 1.0;
@@ -326,37 +328,47 @@ namespace DeepRacer
             {
                 try
                 {
-                    _client = new DeepRacerClient();
-                    Console.WriteLine("Try Connecting...");
-                    await _client.ConnectAsync(addr, port, ct);
-                    Console.WriteLine("Connected.");
-
-                    var speeds = new List<double>();
-                    for (var i = 1; i <= tbThrottle.Maximum; i++)
+                    using (_client = new DeepRacerClient())
                     {
-                        speeds.Add((double) _setting.MaxSpeed * i/ tbThrottle.Maximum);
-                    }
+                        Console.WriteLine("Try Connecting...");
+                        await _client.ConnectAsync(addr, port, ct);
+                        Console.WriteLine("Connected.");
 
-                    await _client.SendInitializingDataAsync(
-                        new InitializingData()
+                        var speeds = new List<double>();
+                        for (var i = 1; i <= tbThrottle.Maximum; i++)
                         {
-                            rf = _setting.Module,
-                            waypoints = _waypoints,
-                            speeds = speeds
-                        });
-
-                    var cachedRequest = "";
-                    while (!ct.IsCancellationRequested)
-                    {
-                        var request = createRewardRequest();
-                        var requestStr = JsonConvert.SerializeObject(request);
-                        if (requestStr != cachedRequest)
-                        {
-                            cachedRequest = requestStr;
-                            var reward = await _client.GetRewardAsync(request);
-                            setRewardValues(reward);
+                            speeds.Add((double)_setting.MaxSpeed * i / tbThrottle.Maximum);
                         }
-                        await Task.Delay(TimeSpan.FromMilliseconds(200), ct);
+
+                        var initialized = await _client.SendInitializingDataAsync(
+                            new InitializingData()
+                            {
+                                rf = _setting.Module,
+                                waypoints = _waypoints,
+                                track_width = _trackWidth,
+                                speeds = speeds
+                            });
+
+                        _optimalWaypoints = initialized.optimal_waypoints;
+                        canvas.Invalidate();
+
+                        var cachedRequest = "";
+                        while (!ct.IsCancellationRequested)
+                        {
+                            var request = createRewardRequest();
+                            var requestStr = JsonConvert.SerializeObject(request);
+                            if (requestStr != cachedRequest)
+                            {
+                                cachedRequest = requestStr;
+                                var reward = await _client.GetRewardAsync(request);
+                                setRewardValues(reward);
+                            }
+                            else
+                            {
+                                await _client.Ping();
+                            }
+                            await Task.Delay(TimeSpan.FromMilliseconds(200), ct);
+                        }
                     }
                 }
                 catch (Exception e)
@@ -390,19 +402,21 @@ namespace DeepRacer
         {
             var graphics = e.Graphics;
 
-            drawLine(_waypoints, graphics);
-            drawLine(_inner_border, graphics);
-            drawLine(_outer_border, graphics);
+            drawLine(_waypoints, Color.Black, graphics);
+            drawLine(_inner_border, Color.Black, graphics);
+            drawLine(_outer_border, Color.Black, graphics);
+
+            if (_optimalWaypoints != null)
+                drawLine(_optimalWaypoints, Color.Green, graphics);
 
             drawCar(graphics);
 
             drawWaypoint(graphics);
         }
 
-        private void drawLine(List<RPoint> points, Graphics graphics)
+        private void drawLine(List<RPoint> points, Color color, Graphics graphics)
         {
-            using (var pen = new Pen(Color.Black))
-            using (var brush = new SolidBrush(Color.Black))
+            using (var pen = new Pen(color))
             {
                 var bp = Point.Empty;
                 foreach (var rp in points)
@@ -516,7 +530,7 @@ namespace DeepRacer
                 RPoint newRPosition = RPoint.From(newPosition);
                 _closestWaypoint = findClosestWaypointPrevIndex(newRPosition, _waypoints);
 
-                _distanceFromCenter = newRPosition.DistanceToLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
+                _distanceFromCenter = Math.Abs(newRPosition.DistanceToLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]));
                 _isLeftOfCenter = newRPosition.IsLeftOfLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
                 _allWheelsOnTrack = _distanceFromCenter < (_trackWidth * 0.45);
                 _trackDirection = _waypoints[_closestWaypoint].GetAngle(_waypoints[_closestWaypoint + 1]);
