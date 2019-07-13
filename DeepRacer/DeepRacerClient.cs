@@ -16,7 +16,9 @@ namespace DeepRacer
     {
         [JsonProperty]
         public const string op = "InitializingData";
+        public string rf { get; set; }
         public List<RPoint> waypoints { get; set; }
+        public List<double> speeds { get; set; }
     }
 
     struct RewardRequest
@@ -65,7 +67,7 @@ namespace DeepRacer
 
         public async Task ConnectAsync(IPAddress addr, int port, CancellationToken ct)
         {
-            if (_client != null && _client.Connected)
+            if (Connected)
                 return;
 
             var ep = new IPEndPoint(addr, port);
@@ -73,6 +75,14 @@ namespace DeepRacer
             _stream = _client.GetStream();
             _writer = new StreamWriter(_stream, new UTF8Encoding(false));
             _reader = new StreamReader(_stream, new UTF8Encoding(false));
+        }
+
+        public void Close()
+        {
+            if (!Connected)
+                return;
+
+            _client.Close();
         }
 
         public void Dispose()

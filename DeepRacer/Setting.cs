@@ -14,6 +14,7 @@ namespace DeepRacer
         public int SteerSteps { get; set; } = 5;
         public int MaxSpeed { get; set; } = 6;
         public int SpeedSteps { get; set; } = 3;
+        public string Module { get; set; } = "reward_function";
 
         public static Setting Load()
         {

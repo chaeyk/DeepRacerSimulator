@@ -37,6 +37,7 @@ namespace DeepRacer
             cbSteerSteps.SelectedItem = setting.SteerSteps.ToString();
             tbMaxSpeed.Text = setting.MaxSpeed.ToString();
             cbSpeedSteps.SelectedItem = setting.SpeedSteps.ToString();
+            tbModule.Text = setting.Module;
         }
 
         public Setting GetSetting()
@@ -47,6 +48,7 @@ namespace DeepRacer
                 SteerSteps = int.Parse(cbSteerSteps.SelectedItem.ToString()),
                 MaxSpeed = int.Parse(tbMaxSpeed.Text),
                 SpeedSteps = int.Parse(cbSpeedSteps.SelectedItem.ToString()),
+                Module = tbModule.Text,
             };
         }
     }

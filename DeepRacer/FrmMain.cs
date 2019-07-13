@@ -331,10 +331,18 @@ namespace DeepRacer
                     await _client.ConnectAsync(addr, port, ct);
                     Console.WriteLine("Connected.");
 
+                    var speeds = new List<double>();
+                    for (var i = 1; i <= tbThrottle.Maximum; i++)
+                    {
+                        speeds.Add((double) _setting.MaxSpeed * i/ tbThrottle.Maximum);
+                    }
+
                     await _client.SendInitializingDataAsync(
                         new InitializingData()
                         {
-                            waypoints = _waypoints
+                            rf = _setting.Module,
+                            waypoints = _waypoints,
+                            speeds = speeds
                         });
 
                     var cachedRequest = "";
@@ -671,6 +679,7 @@ namespace DeepRacer
             if (setting != null)
             {
                 setting.Save();
+                _client.Close();
                 applySetting(setting);
             }
         }

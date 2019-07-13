@@ -38,6 +38,8 @@
             this.cbSpeedSteps = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbModule = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -51,9 +53,11 @@
             // 
             // tbMaxSteer
             // 
+            this.tbMaxSteer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbMaxSteer.Location = new System.Drawing.Point(112, 25);
             this.tbMaxSteer.Name = "tbMaxSteer";
-            this.tbMaxSteer.Size = new System.Drawing.Size(100, 21);
+            this.tbMaxSteer.Size = new System.Drawing.Size(130, 21);
             this.tbMaxSteer.TabIndex = 1;
             // 
             // label2
@@ -67,6 +71,8 @@
             // 
             // cbSteerSteps
             // 
+            this.cbSteerSteps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSteerSteps.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbSteerSteps.FormattingEnabled = true;
             this.cbSteerSteps.Items.AddRange(new object[] {
@@ -75,7 +81,7 @@
             "7"});
             this.cbSteerSteps.Location = new System.Drawing.Point(112, 59);
             this.cbSteerSteps.Name = "cbSteerSteps";
-            this.cbSteerSteps.Size = new System.Drawing.Size(100, 20);
+            this.cbSteerSteps.Size = new System.Drawing.Size(130, 20);
             this.cbSteerSteps.TabIndex = 3;
             // 
             // label3
@@ -89,9 +95,11 @@
             // 
             // tbMaxSpeed
             // 
+            this.tbMaxSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbMaxSpeed.Location = new System.Drawing.Point(112, 91);
             this.tbMaxSpeed.Name = "tbMaxSpeed";
-            this.tbMaxSpeed.Size = new System.Drawing.Size(100, 21);
+            this.tbMaxSpeed.Size = new System.Drawing.Size(130, 21);
             this.tbMaxSpeed.TabIndex = 5;
             // 
             // label4
@@ -105,6 +113,8 @@
             // 
             // cbSpeedSteps
             // 
+            this.cbSpeedSteps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSpeedSteps.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbSpeedSteps.FormattingEnabled = true;
             this.cbSpeedSteps.Items.AddRange(new object[] {
@@ -113,13 +123,14 @@
             "3"});
             this.cbSpeedSteps.Location = new System.Drawing.Point(112, 124);
             this.cbSpeedSteps.Name = "cbSpeedSteps";
-            this.cbSpeedSteps.Size = new System.Drawing.Size(100, 20);
+            this.cbSpeedSteps.Size = new System.Drawing.Size(130, 20);
             this.cbSpeedSteps.TabIndex = 7;
             // 
             // button1
             // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(43, 162);
+            this.button1.Location = new System.Drawing.Point(62, 205);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(69, 26);
             this.button1.TabIndex = 8;
@@ -128,19 +139,40 @@
             // 
             // button2
             // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(131, 162);
+            this.button2.Location = new System.Drawing.Point(150, 205);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(68, 25);
             this.button2.TabIndex = 9;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(30, 163);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(47, 12);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Module";
+            // 
+            // tbModule
+            // 
+            this.tbModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbModule.Location = new System.Drawing.Point(112, 160);
+            this.tbModule.Name = "tbModule";
+            this.tbModule.Size = new System.Drawing.Size(130, 21);
+            this.tbModule.TabIndex = 11;
+            // 
             // FrmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(233, 201);
+            this.ClientSize = new System.Drawing.Size(267, 242);
+            this.Controls.Add(this.tbModule);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.cbSpeedSteps);
@@ -170,5 +202,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox cbSteerSteps;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox tbModule;
     }
 }
