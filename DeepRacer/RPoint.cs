@@ -62,19 +62,6 @@ namespace DeepRacer
             Y = y;
         }
 
-        public double DistanceTo(RPoint pt)
-        {
-            var vec = pt - this;
-            return Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
-        }
-
-        // 이 점과 pt가 이루는 각도를 리턴한다.
-        public double GetAngle(RPoint pt)
-        {
-            double radian = Math.Atan2(pt.Y - this.Y, pt.X - this.X);
-            return radian * 180 / Math.PI;
-        }
-
         public Point toPoint()
         {
             return new Point(ToScreenX(X), ToScreenY(Y));
@@ -130,6 +117,19 @@ namespace DeepRacer
         public static double ToRacerX(int x) { return (double)x / (SCALE * 100); }
         public static double ToRacerY(int y) { return (double)(SCREEN_Y_TOP - y) / (SCALE * 100); }
 
+        public double DistanceTo(RPoint pt)
+        {
+            var vec = pt - this;
+            return Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
+        }
+
+        // 이 점과 pt가 이루는 각도를 리턴한다.
+        public double GetAngle(RPoint pt)
+        {
+            double radian = Math.Atan2(pt.Y - this.Y, pt.X - this.X);
+            return radian * 180 / Math.PI;
+        }
+
         /**
          * pt와 lpt1 -- lpt2 라인의 거리를 측정한다
          * pt가 lpt1-lpt2의 왼쪽이면 마이너스, 오른쪽이면 플러스 값이 리턴된다.
@@ -150,24 +150,15 @@ namespace DeepRacer
         }
 
         /**
-         * center를 중심으로 pt를 angle만큼 회전시킨다
+         * 현재 점이 lpt1, lpt2를 잇는 선과 직교하는 포인트를 구한다.
          */
-        public static RPoint Rotate(RPoint center, RPoint pt, double angle)
+        public RPoint GetClosestPointFromLine(RPoint lpt1, RPoint lpt2)
         {
-            double radians = angle * Math.PI / 180;
-            double sin = Math.Sin(radians);
-            double cos = Math.Cos(radians);
-
-            // Translate point back to origin
-            pt.X -= center.X;
-            pt.Y -= center.Y;
-
-            // Rotate point
-            double xnew = pt.X * cos - pt.Y * sin;
-            double ynew = pt.X * sin + pt.Y * cos;
-
-            // Translate point back
-            return new RPoint(xnew + center.X, ynew + center.Y);
+            var px = lpt2.X - lpt1.X;
+            var py = lpt2.Y - lpt1.Y;
+            var dab = px * px + py * py;
+            var u = ((X - lpt1.X) * px + (Y - lpt1.Y) * py) / dab;
+            return new RPoint(lpt1.X + u * px, lpt1.Y + u * py);
         }
     }
 }

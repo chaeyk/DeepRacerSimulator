@@ -249,16 +249,23 @@ namespace DeepRacer
 
         private Size _carSize = new Size(25 * RPoint.SCALE, 18  * RPoint.SCALE);
         private Point _carPosition;
-        private int _closestWaypoint = -1;
+        private (int prev, int next) _closestWaypointIndex;
         private double _distanceFromCenter;
         private bool _isLeftOfCenter;
         private const double _trackWidth = 0.6017558857057772;
         private bool _allWheelsOnTrack;
         private double _trackDirection;
-        private double _directionDiff;
+        private double _trackDirectionDiff;
         private bool _reverse = false;
 
+        public bool HasOptimalWaypoints { get { return _optimalWaypoints != null && _optimalWaypoints.Count > 0; } }
+
         private List<RPoint> _optimalWaypoints;
+        private (int prev, int next) _closestOptimalWaypointIndex;
+        private double _distanceFromOptimal;
+        private bool _isLeftOfOptimal;
+        private double _optimalDirection;
+        private double _optimalDirectionDiff;
 
         private Setting _setting;
 
@@ -352,6 +359,9 @@ namespace DeepRacer
                         _optimalWaypoints = initialized.optimal_waypoints;
                         canvas.Invalidate();
 
+                        cbFollowOptimal.Enabled = HasOptimalWaypoints;
+                        cbShowOptimal.Enabled = HasOptimalWaypoints;
+
                         var cachedRequest = "";
                         while (!ct.IsCancellationRequested)
                         {
@@ -393,7 +403,8 @@ namespace DeepRacer
             request.speed = (double)_setting.MaxSpeed * tbThrottle.Value / tbThrottle.Maximum;
             request.steering_angle = (double)_setting.MaxSteer * tbSteer.Value / tbSteer.Maximum;
             request.track_width = _trackWidth;
-            request.closest_waypoints = new int[] { _closestWaypoint, _closestWaypoint + 1 };
+            // reward_function은 (n, n+1)을 보내야 한다.
+            request.closest_waypoints = new int[] { _closestWaypointIndex.prev, _closestWaypointIndex.prev + 1 };
             request.is_reversed = chkReverse.Checked;
             return request;
         }
@@ -402,16 +413,23 @@ namespace DeepRacer
         {
             var graphics = e.Graphics;
 
-            drawLine(_waypoints, Color.Black, graphics);
             drawLine(_inner_border, Color.Black, graphics);
             drawLine(_outer_border, Color.Black, graphics);
 
-            if (_optimalWaypoints != null)
+            if (cbShowWaypoint.Checked)
+            {
+                drawLine(_waypoints, Color.Black, graphics);
+                drawWaypoint(graphics);
+            }
+
+            if (HasOptimalWaypoints && cbShowOptimal.Checked)
+            {
                 drawLine(_optimalWaypoints, Color.Green, graphics);
+                drawOptimalWaypoint(graphics);
+            }
 
             drawCar(graphics);
 
-            drawWaypoint(graphics);
         }
 
         private void drawLine(List<RPoint> points, Color color, Graphics graphics)
@@ -433,7 +451,6 @@ namespace DeepRacer
 
         private void drawWaypoint(Graphics graphics)
         {
-            using (var pen = new Pen(Color.Black))
             using (var normalBrush = new SolidBrush(Color.Black))
             using (var startBrush = new SolidBrush(Color.Red))
             using (var closeBrush = new SolidBrush(Color.Blue))
@@ -447,13 +464,43 @@ namespace DeepRacer
                     var p = rp.toPoint();
 
                     Brush brush;
-                    if (i == _closestWaypoint || i == _closestWaypoint + 1 || (_closestWaypoint == i - _waypoints.Count + 1))
+                    if (i == _closestWaypointIndex.prev || i == _closestWaypointIndex.next
+                        || (i == _closestWaypointIndex.prev + _waypoints.Count - 1))
                     {
                         brush = closeBrush;
                     }
                     else if (i == 0 || i == _waypoints.Count - 1)
                     {
                         brush = startBrush;
+                    }
+                    else
+                    {
+                        brush = normalBrush;
+                    }
+
+                    graphics.FillEllipse(brush, new Rectangle(p - circleSizeHalf, circleSize));
+                }
+            }
+        }
+
+        private void drawOptimalWaypoint(Graphics graphics)
+        {
+            using (var normalBrush = new SolidBrush(Color.DarkOliveGreen))
+            using (var closeBrush = new SolidBrush(Color.YellowGreen))
+            {
+                var circleSize = new Size(6, 6);
+                var circleSizeHalf = new Size(circleSize.Width / 2, circleSize.Height / 2);
+
+                for (var i = 0; i < _optimalWaypoints.Count; i++)
+                {
+                    var rp = _optimalWaypoints[i];
+                    var p = rp.toPoint();
+
+                    Brush brush;
+                    if (i == _closestOptimalWaypointIndex.prev || i == _closestOptimalWaypointIndex.next
+                        || (i == _closestOptimalWaypointIndex.prev + _optimalWaypoints.Count - 1))
+                    {
+                        brush = closeBrush;
                     }
                     else
                     {
@@ -525,51 +572,56 @@ namespace DeepRacer
             {
                 Point oldPosition = _carPosition;
                 _carPosition = newPosition;
-
-                int oldClosestWaypoint = _closestWaypoint;
                 RPoint newRPosition = RPoint.From(newPosition);
-                _closestWaypoint = findClosestWaypointPrevIndex(newRPosition, _waypoints);
 
-                _distanceFromCenter = Math.Abs(newRPosition.DistanceToLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]));
-                _isLeftOfCenter = newRPosition.IsLeftOfLine(_waypoints[_closestWaypoint], _waypoints[_closestWaypoint + 1]);
+                /////////////////////////////////////////////////////////////////
+                // 트랙 관련된 수치 계산
+                _closestWaypointIndex = DMath.FindClosestWaypointIndex(newRPosition, _waypoints);
+                double distanceFromCenter = DMath.GetDistanceToWaypoint(newRPosition, _waypoints, _closestWaypointIndex);
+                _distanceFromCenter = Math.Abs(distanceFromCenter);
+                _isLeftOfCenter = distanceFromCenter <= 0;
+                _trackDirection = DMath.GetWaypointDirection(_waypoints, _closestWaypointIndex, newRPosition);
                 _allWheelsOnTrack = _distanceFromCenter < (_trackWidth * 0.45);
-                _trackDirection = _waypoints[_closestWaypoint].GetAngle(_waypoints[_closestWaypoint + 1]);
-                if (maintainDirectionDiff)
+                /////////////////////////////////////////////////////////////////
+
+                /////////////////////////////////////////////////////////////////
+                // 최적 경로 데이터가 있으면 그에 대한 수치 계산
+                if (HasOptimalWaypoints)
                 {
-                    tbHeading.Value = (int)getAngleDiff(_trackDirection + _directionDiff, 0);
+                    _closestOptimalWaypointIndex = DMath.FindClosestWaypointIndex(newRPosition, _optimalWaypoints);
+
+                    double distanceFromOptimal = DMath.GetDistanceToWaypoint(newRPosition, _optimalWaypoints, _closestOptimalWaypointIndex);
+                    _distanceFromOptimal = Math.Abs(distanceFromOptimal);
+                    _isLeftOfOptimal = distanceFromOptimal <= 0;
+                    _optimalDirection = DMath.GetWaypointDirection(_optimalWaypoints, _closestOptimalWaypointIndex, newRPosition);
                 }
                 else
                 {
-                    _directionDiff = getAngleDiff(tbHeading.Value, _trackDirection);
+                    _distanceFromOptimal = 0;
+                    _isLeftOfOptimal = false;
+                    _optimalDirection = 0;
+                    _optimalDirectionDiff = 0;
                 }
+                /////////////////////////////////////////////////////////////////
 
-                // 차가 회전을 하니 최대 변의 길이 * 2.5 해서 다시 그려야 한다
-                int max = Math.Max(_carSize.Width, _carSize.Height);
-                int len = (int)(max * 2.5);
 
-                Size drawSize = new Size(len, len);
-                Size drawHalfSize = new Size(drawSize.Width / 2, drawSize.Height / 2);
-
-                Region region = new Region(new Rectangle(newPosition - drawHalfSize, drawSize));
-                if (!oldPosition.IsEmpty)
+                if (maintainDirectionDiff && cbFollowTrack.Checked)
                 {
-                    region.Union(new Rectangle(oldPosition - drawHalfSize, drawSize));
+                    tbHeading.Value = (int)DMath.GetAngleDiff(_trackDirection + _trackDirectionDiff, 0);
                 }
-
-                // 이전의 closest waypoint 표시는 지워야 한다.
-                if (oldClosestWaypoint >= 0)
+                else if (maintainDirectionDiff && cbFollowOptimal.Checked)
                 {
-                    Size wpSize = new Size(6, 6);
-                    Size wpHalfSize = new Size(wpSize.Width / 2, wpSize.Height / 2);
-
-                    Point wp1 = _waypoints[oldClosestWaypoint].toPoint();
-                    region.Union(new Rectangle(wp1 - wpHalfSize, wpSize));
-
-                    Point wp2 = _waypoints[oldClosestWaypoint + 1].toPoint();
-                    region.Union(new Rectangle(wp2 - wpHalfSize, wpSize));
+                    tbHeading.Value = (int)DMath.GetAngleDiff(_optimalDirection + _optimalDirectionDiff, 0);
+                }
+                else
+                {
+                    _trackDirectionDiff = DMath.GetAngleDiff(tbHeading.Value, _trackDirection);
+                    _optimalDirectionDiff = DMath.GetAngleDiff(tbHeading.Value, _optimalDirection);
                 }
 
-                canvas.Invalidate(region);
+                // canvas 다시 그리기
+                // 퍼포먼스에 문제가 없어서 그냥 전체를 새로 그림
+                canvas.Invalidate();
 
                 setPositionLabels();
             }
@@ -579,28 +631,38 @@ namespace DeepRacer
             }
         }
 
-        private double getAngleDiff(double angle1, double angle2)
-        {
-            double diff = angle1 - angle2;
-            if (diff >= 180)
-                diff -= 360;
-            else if (diff <= -180)
-                diff += 360;
-            return diff;
-        }
-
         private void setPositionLabels()
         {
             // 현재 위치를 label에 출력
             RPoint rpos = RPoint.From(_carPosition);
             lblPosition.Text = String.Format("X: {0,0:f2}, Y: {1,0:f2}", rpos.X, rpos.Y);
 
-            lblClosestWp.Text = $"Closest Waypoint: {_closestWaypoint}";
+            lblClosestWp.Text = $"Closest Waypoint: ({_closestWaypointIndex.prev}, {_closestWaypointIndex.next})";
 
-            lblAngle.Text = String.Format("Track Direction: {0,0:f2}, DirectionDiff: {1,0:f2}",
-                _trackDirection, _directionDiff);
+            lblTrackDirectionDiff.Text = String.Format("Track Direction: {0,0:f2}, DirectionDiff: {1,0:f2}",
+                _trackDirection, _trackDirectionDiff);
 
             lblDistanceFromCenter.Text = String.Format("Distance from center: {0,0:f3}", _distanceFromCenter);
+
+            if (HasOptimalWaypoints)
+            {
+                lblClosestOwp.Visible = true;
+                lblClosestOwp.Text = $"Closest Optimal: ({_closestOptimalWaypointIndex.prev}, {_closestOptimalWaypointIndex.next})";
+
+                lblOptimalDirectionDiff.Visible = true;
+                lblOptimalDirectionDiff.Text = String.Format("Optimal Direction: {0,0:f2}, DirectionDiff: {1,0:f2}",
+                    _optimalDirection, _optimalDirectionDiff);
+
+                lblDistanceFromOptimal.Visible = true;
+                lblDistanceFromOptimal.Text = String.Format("Distance from optimal: {0,0:f3}", _distanceFromOptimal);
+            }
+            else
+            {
+                lblClosestOwp.Visible = false;
+                lblOptimalDirectionDiff.Visible = false;
+                lblDistanceFromOptimal.Visible = false;
+            }
+
         }
 
         private void ValueChanged(object sender, EventArgs e)
@@ -655,33 +717,6 @@ namespace DeepRacer
             }
         }
 
-        private int findClosestWaypointPrevIndex(RPoint pt, List<RPoint> waypoints)
-        {
-            var index = -1;
-            for (var i = 0; i < waypoints.Count - 1; i++)
-            {
-                RPoint prev = waypoints[i];
-                RPoint next = waypoints[i + 1];
-
-                double angle = prev.GetAngle(next);
-
-                RPoint rotatedNext = RPoint.Rotate(prev, next, -angle);
-                RPoint rotatedPt = RPoint.Rotate(prev, pt, -angle);
-                if (rotatedPt.X <= rotatedNext.X)
-                {
-                    if (index < 0 || pt.DistanceTo(next) < pt.DistanceTo(waypoints[index + 1]))
-                    {
-                        index = i;
-                    }
-                }
-            }
-
-            if (index == -1)
-                throw new Exception($"cannot find closest waypoint of {pt}");
-
-            return index;
-        }
-
         private void btnResetScale_Click(object sender, EventArgs e)
         {
             _maxReward = 1;
@@ -706,6 +741,30 @@ namespace DeepRacer
                 _waypoints = _reverse ? _waypointsReverse : _waypointsForward;
                 setCarPosition(_carPosition, true);
             }
+        }
+
+        private void cbFollowTrack_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbFollowTrack.Checked)
+                cbFollowOptimal.Checked = false;
+            canvas.Invalidate();
+        }
+
+        private void cbFollowOptimal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbFollowOptimal.Checked)
+                cbFollowTrack.Checked = false;
+            canvas.Invalidate();
+        }
+
+        private void cbShowWaypoint_CheckedChanged(object sender, EventArgs e)
+        {
+            canvas.Invalidate();
+        }
+
+        private void cbShowOptimal_CheckedChanged(object sender, EventArgs e)
+        {
+            canvas.Invalidate();
         }
     }
 }

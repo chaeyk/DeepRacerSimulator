@@ -30,6 +30,7 @@
         {
             this.pbReward1 = new System.Windows.Forms.ProgressBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblMouse = new System.Windows.Forms.Label();
             this.chkReverse = new System.Windows.Forms.CheckBox();
             this.btnSettings = new System.Windows.Forms.Button();
             this.lblProgress = new System.Windows.Forms.Label();
@@ -37,7 +38,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.btnResetScale = new System.Windows.Forms.Button();
             this.lblDistanceFromCenter = new System.Windows.Forms.Label();
-            this.lblAngle = new System.Windows.Forms.Label();
+            this.lblTrackDirectionDiff = new System.Windows.Forms.Label();
             this.lblClosestWp = new System.Windows.Forms.Label();
             this.lblPosition = new System.Windows.Forms.Label();
             this.lblTotalReward = new System.Windows.Forms.Label();
@@ -61,7 +62,13 @@
             this.tbSteer = new System.Windows.Forms.TrackBar();
             this.tbThrottle = new System.Windows.Forms.TrackBar();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.lblMouse = new System.Windows.Forms.Label();
+            this.lblClosestOwp = new System.Windows.Forms.Label();
+            this.lblOptimalDirectionDiff = new System.Windows.Forms.Label();
+            this.lblDistanceFromOptimal = new System.Windows.Forms.Label();
+            this.cbFollowTrack = new System.Windows.Forms.CheckBox();
+            this.cbFollowOptimal = new System.Windows.Forms.CheckBox();
+            this.cbShowWaypoint = new System.Windows.Forms.CheckBox();
+            this.cbShowOptimal = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbProgress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHeading)).BeginInit();
@@ -81,8 +88,16 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.cbShowOptimal);
+            this.panel1.Controls.Add(this.cbShowWaypoint);
+            this.panel1.Controls.Add(this.cbFollowOptimal);
+            this.panel1.Controls.Add(this.cbFollowTrack);
+            this.panel1.Controls.Add(this.lblDistanceFromOptimal);
+            this.panel1.Controls.Add(this.lblOptimalDirectionDiff);
+            this.panel1.Controls.Add(this.lblClosestOwp);
             this.panel1.Controls.Add(this.lblMouse);
             this.panel1.Controls.Add(this.chkReverse);
             this.panel1.Controls.Add(this.btnSettings);
@@ -91,7 +106,7 @@
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.btnResetScale);
             this.panel1.Controls.Add(this.lblDistanceFromCenter);
-            this.panel1.Controls.Add(this.lblAngle);
+            this.panel1.Controls.Add(this.lblTrackDirectionDiff);
             this.panel1.Controls.Add(this.lblClosestWp);
             this.panel1.Controls.Add(this.lblPosition);
             this.panel1.Controls.Add(this.lblTotalReward);
@@ -117,8 +132,17 @@
             this.panel1.Controls.Add(this.pbReward1);
             this.panel1.Location = new System.Drawing.Point(12, 553);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(862, 270);
+            this.panel1.Size = new System.Drawing.Size(862, 298);
             this.panel1.TabIndex = 1;
+            // 
+            // lblMouse
+            // 
+            this.lblMouse.AutoSize = true;
+            this.lblMouse.Location = new System.Drawing.Point(28, 242);
+            this.lblMouse.Name = "lblMouse";
+            this.lblMouse.Size = new System.Drawing.Size(44, 12);
+            this.lblMouse.TabIndex = 31;
+            this.lblMouse.Text = "mouse";
             // 
             // chkReverse
             // 
@@ -188,14 +212,14 @@
             this.lblDistanceFromCenter.TabIndex = 24;
             this.lblDistanceFromCenter.Text = "distance";
             // 
-            // lblAngle
+            // lblTrackDirectionDiff
             // 
-            this.lblAngle.AutoSize = true;
-            this.lblAngle.Location = new System.Drawing.Point(345, 216);
-            this.lblAngle.Name = "lblAngle";
-            this.lblAngle.Size = new System.Drawing.Size(36, 12);
-            this.lblAngle.TabIndex = 23;
-            this.lblAngle.Text = "angle";
+            this.lblTrackDirectionDiff.AutoSize = true;
+            this.lblTrackDirectionDiff.Location = new System.Drawing.Point(345, 216);
+            this.lblTrackDirectionDiff.Name = "lblTrackDirectionDiff";
+            this.lblTrackDirectionDiff.Size = new System.Drawing.Size(36, 12);
+            this.lblTrackDirectionDiff.TabIndex = 23;
+            this.lblTrackDirectionDiff.Text = "angle";
             // 
             // lblClosestWp
             // 
@@ -415,33 +439,98 @@
             // 
             // canvas
             // 
-            this.canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.canvas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.canvas.BackColor = System.Drawing.Color.White;
             this.canvas.Location = new System.Drawing.Point(12, 12);
             this.canvas.Name = "canvas";
-            this.canvas.Size = new System.Drawing.Size(862, 535);
+            this.canvas.Size = new System.Drawing.Size(862, 529);
             this.canvas.TabIndex = 2;
             this.canvas.TabStop = false;
             this.canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.canvas_Paint);
             this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
-            // lblMouse
+            // lblClosestOwp
             // 
-            this.lblMouse.AutoSize = true;
-            this.lblMouse.Location = new System.Drawing.Point(28, 242);
-            this.lblMouse.Name = "lblMouse";
-            this.lblMouse.Size = new System.Drawing.Size(44, 12);
-            this.lblMouse.TabIndex = 31;
-            this.lblMouse.Text = "mouse";
+            this.lblClosestOwp.AutoSize = true;
+            this.lblClosestOwp.Location = new System.Drawing.Point(181, 242);
+            this.lblClosestOwp.Name = "lblClosestOwp";
+            this.lblClosestOwp.Size = new System.Drawing.Size(63, 12);
+            this.lblClosestOwp.TabIndex = 32;
+            this.lblClosestOwp.Text = "closestWp";
+            // 
+            // lblOptimalDirectionDiff
+            // 
+            this.lblOptimalDirectionDiff.AutoSize = true;
+            this.lblOptimalDirectionDiff.Location = new System.Drawing.Point(345, 242);
+            this.lblOptimalDirectionDiff.Name = "lblOptimalDirectionDiff";
+            this.lblOptimalDirectionDiff.Size = new System.Drawing.Size(36, 12);
+            this.lblOptimalDirectionDiff.TabIndex = 33;
+            this.lblOptimalDirectionDiff.Text = "angle";
+            // 
+            // lblDistanceFromOptimal
+            // 
+            this.lblDistanceFromOptimal.AutoSize = true;
+            this.lblDistanceFromOptimal.Location = new System.Drawing.Point(612, 242);
+            this.lblDistanceFromOptimal.Name = "lblDistanceFromOptimal";
+            this.lblDistanceFromOptimal.Size = new System.Drawing.Size(53, 12);
+            this.lblDistanceFromOptimal.TabIndex = 34;
+            this.lblDistanceFromOptimal.Text = "distance";
+            // 
+            // cbFollowTrack
+            // 
+            this.cbFollowTrack.AutoSize = true;
+            this.cbFollowTrack.Checked = true;
+            this.cbFollowTrack.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFollowTrack.Location = new System.Drawing.Point(27, 270);
+            this.cbFollowTrack.Name = "cbFollowTrack";
+            this.cbFollowTrack.Size = new System.Drawing.Size(97, 16);
+            this.cbFollowTrack.TabIndex = 35;
+            this.cbFollowTrack.Text = "Follow Track";
+            this.cbFollowTrack.UseVisualStyleBackColor = true;
+            this.cbFollowTrack.CheckedChanged += new System.EventHandler(this.cbFollowTrack_CheckedChanged);
+            // 
+            // cbFollowOptimal
+            // 
+            this.cbFollowOptimal.AutoSize = true;
+            this.cbFollowOptimal.Location = new System.Drawing.Point(158, 270);
+            this.cbFollowOptimal.Name = "cbFollowOptimal";
+            this.cbFollowOptimal.Size = new System.Drawing.Size(108, 16);
+            this.cbFollowOptimal.TabIndex = 36;
+            this.cbFollowOptimal.Text = "Follow Optimal";
+            this.cbFollowOptimal.UseVisualStyleBackColor = true;
+            this.cbFollowOptimal.CheckedChanged += new System.EventHandler(this.cbFollowOptimal_CheckedChanged);
+            // 
+            // cbShowWaypoint
+            // 
+            this.cbShowWaypoint.AutoSize = true;
+            this.cbShowWaypoint.Checked = true;
+            this.cbShowWaypoint.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbShowWaypoint.Location = new System.Drawing.Point(311, 270);
+            this.cbShowWaypoint.Name = "cbShowWaypoint";
+            this.cbShowWaypoint.Size = new System.Drawing.Size(111, 16);
+            this.cbShowWaypoint.TabIndex = 37;
+            this.cbShowWaypoint.Text = "Show Waypoint";
+            this.cbShowWaypoint.UseVisualStyleBackColor = true;
+            this.cbShowWaypoint.CheckedChanged += new System.EventHandler(this.cbShowWaypoint_CheckedChanged);
+            // 
+            // cbShowOptimal
+            // 
+            this.cbShowOptimal.AutoSize = true;
+            this.cbShowOptimal.Location = new System.Drawing.Point(451, 270);
+            this.cbShowOptimal.Name = "cbShowOptimal";
+            this.cbShowOptimal.Size = new System.Drawing.Size(103, 16);
+            this.cbShowOptimal.TabIndex = 38;
+            this.cbShowOptimal.Text = "Show Optimal";
+            this.cbShowOptimal.UseVisualStyleBackColor = true;
+            this.cbShowOptimal.CheckedChanged += new System.EventHandler(this.cbShowOptimal_CheckedChanged);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 835);
+            this.ClientSize = new System.Drawing.Size(886, 863);
             this.Controls.Add(this.canvas);
             this.Controls.Add(this.panel1);
             this.Name = "FrmMain";
@@ -486,7 +575,7 @@
         private System.Windows.Forms.Label lblReward1;
         private System.Windows.Forms.Label lblPosition;
         private System.Windows.Forms.Label lblClosestWp;
-        private System.Windows.Forms.Label lblAngle;
+        private System.Windows.Forms.Label lblTrackDirectionDiff;
         private System.Windows.Forms.Label lblDistanceFromCenter;
         private System.Windows.Forms.Button btnResetScale;
         private System.Windows.Forms.Label lblProgress;
@@ -495,6 +584,13 @@
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.CheckBox chkReverse;
         private System.Windows.Forms.Label lblMouse;
+        private System.Windows.Forms.Label lblOptimalDirectionDiff;
+        private System.Windows.Forms.Label lblClosestOwp;
+        private System.Windows.Forms.Label lblDistanceFromOptimal;
+        private System.Windows.Forms.CheckBox cbShowOptimal;
+        private System.Windows.Forms.CheckBox cbShowWaypoint;
+        private System.Windows.Forms.CheckBox cbFollowOptimal;
+        private System.Windows.Forms.CheckBox cbFollowTrack;
     }
 }
 
