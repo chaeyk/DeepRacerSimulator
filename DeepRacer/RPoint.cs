@@ -129,8 +129,13 @@ namespace DeepRacer
          */
         public double DistanceToLine(RPoint lpt1, RPoint lpt2)
         {
-            return ((lpt2.Y - lpt1.Y) * this.X - (lpt2.X - lpt1.X) * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) /
-                Math.Sqrt(Math.Pow(lpt2.Y - lpt1.Y, 2) + Math.Pow(lpt2.X - lpt1.X, 2));
+            if (lpt1 == lpt2)
+                return DistanceTo(lpt1);
+
+            double dx = lpt2.X - lpt1.X;
+            double dy = lpt2.Y - lpt1.Y;
+            double dab = dx * dx + dy * dy;
+            return (dy * this.X - dx * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) / Math.Sqrt(dab);
         }
 
         // 이 점과 pt가 이루는 각도를 리턴한다.
