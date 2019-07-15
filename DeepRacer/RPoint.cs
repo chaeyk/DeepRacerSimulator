@@ -123,13 +123,6 @@ namespace DeepRacer
             return Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
         }
 
-        // 이 점과 pt가 이루는 각도를 리턴한다.
-        public double GetAngle(RPoint pt)
-        {
-            double radian = Math.Atan2(pt.Y - this.Y, pt.X - this.X);
-            return radian * 180 / Math.PI;
-        }
-
         /**
          * pt와 lpt1 -- lpt2 라인의 거리를 측정한다
          * pt가 lpt1-lpt2의 왼쪽이면 마이너스, 오른쪽이면 플러스 값이 리턴된다.
@@ -138,6 +131,13 @@ namespace DeepRacer
         {
             return ((lpt2.Y - lpt1.Y) * this.X - (lpt2.X - lpt1.X) * this.Y + lpt2.X * lpt1.Y - lpt2.Y * lpt1.X) /
                 Math.Sqrt(Math.Pow(lpt2.Y - lpt1.Y, 2) + Math.Pow(lpt2.X - lpt1.X, 2));
+        }
+
+        // 이 점과 pt가 이루는 각도를 리턴한다.
+        public double GetAngle(RPoint pt)
+        {
+            double radian = Math.Atan2(pt.Y - this.Y, pt.X - this.X);
+            return radian * 180 / Math.PI;
         }
 
         /**
@@ -154,6 +154,9 @@ namespace DeepRacer
          */
         public RPoint GetClosestPointFromLine(RPoint lpt1, RPoint lpt2)
         {
+            if (lpt1 == lpt2)
+                return lpt1;
+
             var px = lpt2.X - lpt1.X;
             var py = lpt2.Y - lpt1.Y;
             var dab = px * px + py * py;

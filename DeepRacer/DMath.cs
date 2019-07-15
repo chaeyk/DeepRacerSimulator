@@ -86,7 +86,6 @@ namespace DeepRacer
          */
         public static (int prev, int next) FindClosestWaypointIndex(RPoint pt, List<RPoint> waypoints)
         {
-            var candidates = new List<(int index, double centerDist)>();
             (int prev, int next) closestIndex = (-1, -1); // 그냥 제일 가까운 index
             (int prev, int next) centeredIndex = (-1, -1); // (prev, index) 중심에 제일 가까운 index
 
@@ -178,8 +177,9 @@ namespace DeepRacer
         /**
          * waypoints 상에서 pt에서 가장 가까운 부분의 방향.
          * index는 pt에서 가장 가까운 앞뒤 waypoint
+         * distance가 0이 아니면 앞/뒤로 distance 이동한 다음에 방향을 구한다.
          */
-        public static double GetWaypointDirection(List<RPoint> waypoints, (int prev, int next) index, RPoint pt)
+        public static double GetWaypointDirection(List<RPoint> waypoints, (int prev, int next) index, RPoint pt, double distance = 0)
         {
             
             RPoint cross;
@@ -187,34 +187,44 @@ namespace DeepRacer
                 cross = waypoints[index.prev];
             else
                 cross = pt.GetClosestPointFromLine(waypoints[index.prev], waypoints[index.next]);
-            RPoint ptPrev = GetRPointOnWaypoint(waypoints, index.prev, 0.15, cross, false);
-            RPoint ptNext = GetRPointOnWaypoint(waypoints, index.next, 0.15, cross, true);
+
+            cross = GetRPointOnWaypoint(waypoints, (distance >= 0 ? index.next : index.prev), distance, cross);
+
+            RPoint ptPrev = GetRPointOnWaypoint(waypoints, index.prev, -0.15, cross);
+            RPoint ptNext = GetRPointOnWaypoint(waypoints, index.next, 0.15, cross);
             return ptPrev.GetAngle(ptNext);
         }
 
         /**
-         * waypoints 상에서 pt에서 시작해 앞/뒤로 distance 떨어진 곳의 점을 구한다.
+         * waypoints 상의 pt에서 시작해 앞/뒤로 distance 떨어진 곳의 점을 구한다.
+         * distance > 0 이면 앞으로, 아니면 뒤쪽 방향으로 이동.
+         * pt는 반드시 waypoint 를 잇는 라인 위에 있어야 한다.
          */
-        public static RPoint GetRPointOnWaypoint(List<RPoint> waypoints, int index, double distance, RPoint pt, bool forward)
+        public static RPoint GetRPointOnWaypoint(List<RPoint> waypoints, int index, double distance, RPoint pt)
         {
+            if (distance == 0)
+                return pt;
+
+            var absDistance = Math.Abs(distance);
+
             double distanceSum = 0;
             do
             {
                 double currentDistance = pt.DistanceTo(waypoints[index]);
-                if (distanceSum + currentDistance >= distance)
+                if (distanceSum + currentDistance >= absDistance)
                     break;
 
                 distanceSum += currentDistance;
                 pt = waypoints[index];
 
-                if (forward)
+                if (distance > 0)
                     index = GetNextWaypointIndex(waypoints, index);
                 else
                     index = GetPrevWaypointIndex(waypoints, index);
             }
             while (true);
 
-            return GetRPointOfDistance(pt, waypoints[index], distance - distanceSum);
+            return GetRPointOfDistance(pt, waypoints[index], absDistance - distanceSum);
         }
     }
 }
