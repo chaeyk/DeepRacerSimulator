@@ -490,7 +490,6 @@ namespace DeepRacer
                 var circleSize = new Size(6, 6);
                 var circleSizeHalf = new Size(circleSize.Width / 2, circleSize.Height / 2);
 
-                Console.WriteLine($"count = {_optimalWaypoints.Count}");
                 for (var i = 0; i < _optimalWaypoints.Count - 1; i++)
                 {
                     var rp = _optimalWaypoints[i];
@@ -499,7 +498,6 @@ namespace DeepRacer
                     Brush brush;
                     if (i == _closestOptimalWaypointIndex.prev || i == _closestOptimalWaypointIndex.next)
                     {
-                        Console.WriteLine($"i = {i}");
                         brush = closeBrush;
                     }
                     else
