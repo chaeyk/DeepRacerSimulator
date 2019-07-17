@@ -464,8 +464,7 @@ namespace DeepRacer
                     var p = rp.toPoint();
 
                     Brush brush;
-                    if (i == _closestWaypointIndex.prev || i == _closestWaypointIndex.next
-                        || (i == _closestWaypointIndex.prev + _waypoints.Count - 1))
+                    if (i == _closestWaypointIndex.prev || i == _closestWaypointIndex.next)
                     {
                         brush = closeBrush;
                     }
@@ -491,15 +490,16 @@ namespace DeepRacer
                 var circleSize = new Size(6, 6);
                 var circleSizeHalf = new Size(circleSize.Width / 2, circleSize.Height / 2);
 
-                for (var i = 0; i < _optimalWaypoints.Count; i++)
+                Console.WriteLine($"count = {_optimalWaypoints.Count}");
+                for (var i = 0; i < _optimalWaypoints.Count - 1; i++)
                 {
                     var rp = _optimalWaypoints[i];
                     var p = rp.toPoint();
 
                     Brush brush;
-                    if (i == _closestOptimalWaypointIndex.prev || i == _closestOptimalWaypointIndex.next
-                        || (i == _closestOptimalWaypointIndex.prev + _optimalWaypoints.Count - 1))
+                    if (i == _closestOptimalWaypointIndex.prev || i == _closestOptimalWaypointIndex.next)
                     {
+                        Console.WriteLine($"i = {i}");
                         brush = closeBrush;
                     }
                     else
@@ -765,6 +765,29 @@ namespace DeepRacer
         private void cbShowOptimal_CheckedChanged(object sender, EventArgs e)
         {
             canvas.Invalidate();
+        }
+
+        private void FrmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    if (tbThrottle.Value < tbThrottle.Maximum)
+                        tbThrottle.Value += 1;
+                    break;
+                case Keys.S:
+                    if (tbThrottle.Value > tbThrottle.Minimum)
+                        tbThrottle.Value -= 1;
+                    break;
+                case Keys.D:
+                    if (tbHeading.Value > tbHeading.Minimum)
+                        tbHeading.Value -= 1;
+                    break;
+                case Keys.A:
+                    if (tbHeading.Value < tbHeading.Maximum)
+                        tbHeading.Value += 1;
+                    break;
+            }
         }
     }
 }
