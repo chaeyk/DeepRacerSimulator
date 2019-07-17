@@ -782,10 +782,14 @@ namespace DeepRacer
                 case Keys.D:
                     if (tbHeading.Value > tbHeading.Minimum)
                         tbHeading.Value -= 1;
+                    else if (tbHeading.Value == tbHeading.Minimum)
+                        tbHeading.Value = tbHeading.Maximum;
                     break;
                 case Keys.A:
                     if (tbHeading.Value < tbHeading.Maximum)
                         tbHeading.Value += 1;
+                    else if (tbHeading.Value == tbHeading.Maximum)
+                        tbHeading.Value = tbHeading.Minimum;
                     break;
             }
         }
